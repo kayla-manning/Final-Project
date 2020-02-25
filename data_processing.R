@@ -1,6 +1,7 @@
 library(readxl)
 library(janitor)
 library(tidyverse)
+library(lubridate)
 
 # originally it did not read the excel dates, so I had to manually set col_types
 # other code is just cleaning data and getting it into a usable format
@@ -935,13 +936,22 @@ winthrop_1819 <- bind_rows(winthrop_fall_18, winthrop_spring_19)
 
 # now I will combine all individual house dataframes by year and then combine those into one dataframe with all of 
 # the data
+# adding a column to the main dataframe with day of the week so I can analyze weekdays vs weekends
 
 all_1718 <- bind_rows(adams_1718, berg_1718, cabot_1718, currier_1718, dunster_1718, eliot_1718, flyby_1718, 
                       hillel_1718, kirk_1718, lev_1718, lowell_1718, mather_1718, pfoho_1718, quincy_1718, 
-                      winthrop_1718)
+                      winthrop_1718) %>% 
+  mutate(year = "1718")
 
 all_1819 <- bind_rows(adams_1819, berg_1819, cabot_1819, currier_1819, dunster_1819, eliot_1819, flyby_1819, 
                       hillel_1819, kirk_1819, lev_1819, lowell_1819, mather_1819, pfoho_1819, quincy_1819, 
-                      winthrop_1819)
+                      winthrop_1819) %>% 
+  mutate(year = "1819")
 
-all_data <- rbind(all_1718, all_1819)
+all_data <- rbind(all_1718, all_1819) %>% 
+  mutate(day = wday(date, label = TRUE, abbr = TRUE))
+
+tidy_int_reg_bag <- all_data %>% 
+  select(date, day, year, meal, house, reg, int, bag, grand_total) %>% 
+  pivot_longer(reg:grand_total, names_to = "type", values_to = "count")
+  
