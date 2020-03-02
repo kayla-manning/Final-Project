@@ -954,4 +954,6 @@ all_data <- rbind(all_1718, all_1819) %>%
 tidy_int_reg_bag <- all_data %>% 
   select(date, day, year, meal, house, reg, int, bag, grand_total) %>% 
   pivot_longer(reg:grand_total, names_to = "type", values_to = "count")
+
+write.csv(tidy_int_reg_bag, "raw-data/all_tidy.csv", row.names = FALSE)
   

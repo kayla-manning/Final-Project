@@ -1,0 +1,34 @@
+---
+title: "HUDS Student Traffic Patterns"
+author: "Kayla Manning"
+date: "2/25/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(gt)
+```
+
+## About
+
+My data contains total swipe counts for every Harvard College HUDS location, including FlyBy and Hillel. The swipes are broken down by category, including but not limited to "interhouse", "regular", "bagged", "employee", etc. Using the raw dates, I added columns that contain the day of the week and the academic year. The counts span the entirety of the 2017-2018 and 2018-2019 academic years.
+
+From analyzing student traffic patterns in the various locations, I hope to better understand the impact of the schedule change on student dining. The new course schedule debuted following the 2017-2018 academic year, so I have the data for the academic years immediately before and after this adjustment. My analysis will help HUDS understand changes in the past as it braces itself for more changes to come with the new Allston campus. A significant change in meal patterns with the past schedule change may indicate the potential for future shifts in the 2020-2021 academic year with the opening of the Allston campus and its FlyBy location.
+
+I started off with 60 different spreadsheets--one for each semester at each dining location. After cleaning, tidying, and joining the data, here is a sample of the first ten rows: 
+```{r}
+tidy_int_reg_bag <- read_csv("raw-data/all_tidy.csv",
+                             col_types = cols(col_date(format = ''),
+                                             col_character(),
+                                             col_character(),
+                                             col_character(),
+                                             col_character(),
+                                             col_character(),
+                                             col_double()))
+
+tidy_int_reg_bag %>% 
+  slice(1:10) %>% 
+  gt()
+```

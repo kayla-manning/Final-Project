@@ -1,0 +1,109 @@
+---
+title: "Preliminary Graphs"
+author: "Kayla Manning"
+date: "2/24/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(gt)
+```
+
+
+
+```{r}
+all_data  %>% 
+  filter(meal == "Lunch") %>% 
+  group_by(house) %>% 
+  ggplot(aes(date, grand_total, fill = house)) +
+    geom_col() +
+    scale_y_continuous(limits = c(0, 1000)) +
+    facet_wrap(~ house)
+  
+```
+
+```{r}
+tidy_int_reg_bag <- read_csv("raw-data/all_tidy.csv",
+                             col_types = cols(col_date(format = ''),
+                                             col_character(),
+                                             col_character(),
+                                             col_character(),
+                                             col_character(),
+                                             col_character(),
+                                             col_double()))
+
+tidy_int_reg_bag %>% 
+  filter(type %in% c("reg", "int"),
+         house != "Annenberg",
+         meal == "Lunch") %>% 
+  group_by(house, type, year) %>% 
+  summarize(avg = mean(count, na.rm = TRUE)) %>% 
+  ggplot(aes(house, avg, fill = year)) +
+    geom_col(position = "dodge") +
+    facet_wrap(~ type) +
+    coord_flip()
+```
+
+```{r}
+
+# want to find the increase in percent of interhouse swipes for each meal week
+
+tidy_int_reg_bag %>%
+  select(house, type, meal, year, count) %>% 
+  filter(type %in% c("int", "grand_total"),
+         house != "FlyBy",
+         house != "Hillel",
+         meal != "Day Total",
+         meal != "Brain Break") %>% 
+  group_by(house, year, meal, type) %>% 
+  summarize(count_type = sum(count, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = type, values_from = count_type) %>% 
+  mutate(percent_int = int / grand_total * 100) %>% 
+  select(house, year, meal, percent_int) %>% 
+  pivot_wider(names_from = year, values_from = percent_int) %>% 
+  mutate(difference = `1819` - `1718`) %>% 
+  arrange(desc(difference)) %>% 
+  select(house, meal, difference)
+
+
+tidy_int_reg_bag$meal <-  fct_relevel(tidy_int_reg_bag$meal, "Breakfast", "Lunch", "Dinner")
+
+
+tidy_int_reg_bag %>%
+  select(house, type, meal, year, count) %>% 
+  filter(type %in% c("int", "grand_total"),
+         house != "FlyBy",
+         house != "Hillel",
+         house != "Annenberg",
+         meal != "Day Total",
+         meal != "Brain Break") %>% 
+  group_by(house, year, meal, type) %>% 
+  summarize(avg = mean(count, na.rm = TRUE)) %>% 
+  ggplot(aes(house, avg, fill = year)) +
+    geom_col(position = "dodge") +
+    coord_flip() +
+    facet_wrap(~ meal)
+
+
+```
+
+```{r flyby_increase}
+tidy_int_reg_bag %>% 
+  filter(house == "FlyBy",
+         meal == "Lunch") %>% 
+  group_by(day, year) %>% 
+  summarise(average = mean(count, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = year, values_from = average) %>% 
+  mutate(increase = `1819` - `1718`) %>% 
+  arrange(desc(increase)) %>% 
+  gt() %>% 
+  tab_header("Average Daily Increase in FlyBy Traffic") %>% 
+  cols_label(`1718` = "2017-2018",
+             `1819` = "2018-2019",
+             increase = "Increase") %>% 
+  cols_align("center")
+```
+
