@@ -17,6 +17,8 @@ My data contains total swipe counts for every Harvard College HUDS location, inc
 
 From analyzing student traffic patterns in the various locations, I hope to better understand the impact of the schedule change on student dining. The new course schedule debuted following the 2017-2018 academic year, so I have the data for the academic years immediately before and after this adjustment. My analysis will help HUDS understand changes in the past as it braces itself for more changes to come with the new Allston campus. A significant change in meal patterns with the past schedule change may indicate the potential for future shifts in the 2020-2021 academic year with the opening of the Allston campus and its FlyBy location.
 
+My GitHub repository can be found [here](https://github.com/kayla-manning/final-project). The "raw-data" folder contains all the the Excel spreadsheets I was initially given, as well as a .csv I created called "all_tidy", which combines all of the data in a tidied format. This about page is also there, as well as the R script where I processed the data and an R Markdown where I started generating graphs to get a sense of what I was working with.
+
 I started off with 60 different spreadsheets--one for each semester at each dining location. After cleaning, tidying, and joining the data, here is a sample of the first ten rows: 
 ```{r sample_data}
 tidy_int_reg_bag <- read_csv("raw-data/all_tidy.csv",
@@ -32,4 +34,4 @@ tidy_int_reg_bag %>%
   slice(1:10) %>% 
   gt()
 ```
-My GitHub repository can be found [here](https://github.com/kayla-manning/final-project).
+
