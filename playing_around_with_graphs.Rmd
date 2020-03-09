@@ -7,25 +7,12 @@ output: html_document
 
 ```{r setup, include=FALSE}
 
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(gt)
-```
+library(gridExtra)
+library(lubridate)
 
-
-
-```{r}
-all_data  %>% 
-  filter(meal == "Lunch") %>% 
-  group_by(house) %>% 
-  ggplot(aes(date, grand_total, fill = house)) +
-    geom_col() +
-    scale_y_continuous(limits = c(0, 1000)) +
-    facet_wrap(~ house)
-  
-```
-
-```{r}
 tidy_int_reg_bag <- read_csv("raw-data/all_tidy.csv",
                              col_types = cols(col_date(format = ''),
                                              col_character(),
@@ -35,21 +22,50 @@ tidy_int_reg_bag <- read_csv("raw-data/all_tidy.csv",
                                              col_character(),
                                              col_double()))
 
+```
+
+
+```{r house_year_type_bar}
+
+# need to create this named list so I can change the facet labels on plot
+
+int_reg <- c("Interhouse", "Regular")
+names(int_reg) <- c("int", "reg")
+
+# generating plot
+
 tidy_int_reg_bag %>% 
   filter(type %in% c("reg", "int"),
          house != "Annenberg",
          meal == "Lunch") %>% 
   group_by(house, type, year) %>% 
-  summarize(avg = mean(count, na.rm = TRUE)) %>% 
+  summarize(avg = median(count, na.rm = TRUE)) %>% 
   ggplot(aes(house, avg, fill = year)) +
-    geom_col(position = "dodge") +
-    facet_wrap(~ type) +
-    coord_flip()
+    geom_col(position = position_dodge(-0.9)) +
+    facet_wrap(~ type, labeller = labeller(type = int_reg)) +
+    coord_flip() +
+    ylab("Median Swipe Count") +
+    xlab("House")
+
+interhouse_flyby_increase <- tidy_int_reg_bag %>% 
+  filter(house == "FlyBy",
+         meal == "Lunch",
+         type == "int") %>% 
+  group_by(year) %>% 
+  summarise(median = median(count)) %>% 
+  select(median) %>% 
+  summarise(diff = median[2] - median[1])
+
+
 ```
 
-```{r}
+FlyBy appears to have the greatest increase (everyone is considered interhouse). The difference in median swipe counts from the 2017-2018 to the 2018-2019 academic year is `r interhouse_flyby_increase`.
+
+```{r pct_swipe_increase_by_meal}
 
 # want to find the increase in percent of interhouse swipes for each meal week
+# breakfast first
+# change column title and add a footnote
 
 tidy_int_reg_bag %>%
   select(house, type, meal, year, count) %>% 
@@ -57,20 +73,83 @@ tidy_int_reg_bag %>%
          house != "FlyBy",
          house != "Hillel",
          meal != "Day Total",
-         meal != "Brain Break") %>% 
-  group_by(house, year, meal, type) %>% 
-  summarize(count_type = sum(count, na.rm = TRUE)) %>% 
+         meal == "Breakfast") %>% 
+  group_by(house, year, type) %>% 
+  summarize(count_type = median(count, na.rm = TRUE)) %>% 
   pivot_wider(names_from = type, values_from = count_type) %>% 
   mutate(percent_int = int / grand_total * 100) %>% 
-  select(house, year, meal, percent_int) %>% 
+  select(house, year, percent_int) %>% 
   pivot_wider(names_from = year, values_from = percent_int) %>% 
   mutate(difference = `1819` - `1718`) %>% 
-  arrange(desc(difference)) %>% 
-  select(house, meal, difference)
+  arrange(desc(difference)) %>%
+  select(house, difference) %>% 
+  gt(rowname_col = "house", 
+     groupname_col = FALSE) %>% 
+  cols_label("difference" = "Percent Change in Interhouse Swipes") %>% 
+  tab_header("Change in Interhouse at Breakfast")  %>% 
+  tab_footnote("Calculated as the difference in the percent of median interhouse swipes in 2018-2018 and 2018-2019", locations = cells_column_labels(columns = vars(difference)))
 
+# now lunch
+
+tidy_int_reg_bag %>%
+  select(house, type, meal, year, count) %>% 
+  filter(type %in% c("int", "grand_total"),
+         house != "FlyBy",
+         house != "Hillel",
+         meal != "Day Total",
+         meal == "Lunch") %>% 
+  group_by(house, year, type) %>% 
+  summarize(count_type = median(count, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = type, values_from = count_type) %>% 
+  mutate(percent_int = int / grand_total * 100) %>% 
+  select(house, year, percent_int) %>% 
+  pivot_wider(names_from = year, values_from = percent_int) %>% 
+  mutate(difference = `1819` - `1718`) %>% 
+  arrange(desc(difference)) %>%
+  select(house, difference) %>% 
+  gt(rowname_col = "house", 
+     groupname_col = FALSE) %>% 
+  cols_label("difference" = "Percent Change in Interhouse Swipes") %>% 
+  tab_header("Change in Interhouse at Lunch") %>% 
+  tab_footnote("Calculated as the difference in the percent of median interhouse swipes in 2018-2018 and 2018-2019", locations = cells_column_labels(columns = vars(difference)))
+
+# dinner
+
+tidy_int_reg_bag %>%
+  select(house, type, meal, year, count) %>% 
+  filter(type %in% c("int", "grand_total"),
+         house != "FlyBy",
+         house != "Hillel",
+         meal != "Day Total",
+         meal == "Dinner") %>% 
+  group_by(house, year, type) %>% 
+  summarize(count_type = median(count, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = type, values_from = count_type) %>% 
+  mutate(percent_int = int / grand_total * 100) %>% 
+  select(house, year, percent_int) %>% 
+  pivot_wider(names_from = year, values_from = percent_int) %>% 
+  mutate(difference = `1819` - `1718`) %>% 
+  arrange(desc(difference)) %>%
+  select(house, difference) %>% 
+  gt(rowname_col = "house", 
+     groupname_col = FALSE) %>% 
+  cols_label("difference" = "Percent Change in Interhouse Swipes") %>% 
+  tab_header("Change in Interhouse at Dinner")  %>% 
+  tab_footnote("Calculated as the difference in the percent of median interhouse swipes in 2018-2018 and 2018-2019", locations = cells_column_labels(columns = vars(difference)))
+
+
+
+
+```
+
+```{r}
 
 tidy_int_reg_bag$meal <-  fct_relevel(tidy_int_reg_bag$meal, "Breakfast", "Lunch", "Dinner")
+tidy_int_reg_bag <- with(tidy_int_reg_bag, 
+                         tidy_int_reg_bag[order(year, -as.numeric(year)), ])
 
+tidy_int_reg_bag$meal <- fct_relevel(tidy_int_reg_bag$meal, 
+                                     c("Breakfast", "Lunch", "Dinner"))
 
 tidy_int_reg_bag %>%
   select(house, type, meal, year, count) %>% 
@@ -81,29 +160,46 @@ tidy_int_reg_bag %>%
          meal != "Day Total",
          meal != "Brain Break") %>% 
   group_by(house, year, meal, type) %>% 
-  summarize(avg = mean(count, na.rm = TRUE)) %>% 
+  summarize(avg = median(count, na.rm = TRUE)) %>% 
   ggplot(aes(house, avg, fill = year)) +
-    geom_col(position = "dodge") +
+    geom_col(position = position_dodge(-0.9)) +
+    facet_wrap(~ meal) +
     coord_flip() +
-    facet_wrap(~ meal)
+    labs(title = "Swipe Counts by House and Meal") +
+    scale_fill_discrete(name = "Academic Year",
+                        labels = c("2017-2018", "2018-2019")) +
+    xlab("Location") +
+    ylab("Median Swipe Counts")
 
 
 ```
 
 ```{r flyby_increase}
+
+tidy_int_reg_bag$day <- recode(tidy_int_reg_bag$day,
+                               "Mon" = "Monday",
+                               "Tue" = "Tuesday",
+                               "Wed" = "Wednesday",
+                               "Thu" = "Thursday",
+                               "Fri" = "Friday")
+
 tidy_int_reg_bag %>% 
   filter(house == "FlyBy",
          meal == "Lunch") %>% 
   group_by(day, year) %>% 
-  summarise(average = mean(count, na.rm = TRUE)) %>% 
+  summarise(average = median(count, na.rm = TRUE),
+            average = round(average, 0)) %>% 
   pivot_wider(names_from = year, values_from = average) %>% 
   mutate(increase = `1819` - `1718`) %>% 
   arrange(desc(increase)) %>% 
-  gt() %>% 
+  gt(rowname_col = "day", 
+     groupname_col = FALSE) %>% 
   tab_header("Average Daily Increase in FlyBy Traffic") %>% 
   cols_label(`1718` = "2017-2018",
              `1819` = "2018-2019",
              increase = "Increase") %>% 
-  cols_align("center")
+  cols_align("center") %>% 
+  tab_footnote("Difference in Median Swipe Counts for 2017-2018 and 2018-2019 Academic Years", locations = cells_title("title"))
+
 ```
 
