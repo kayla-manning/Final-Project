@@ -25,7 +25,7 @@ tidy_int_reg_bag <- read_csv("raw-data/all_tidy.csv",
 ```
 
 
-```{r house_year_type_bar}
+```{r house_year_type_bar, warning = FALSE}
 
 # need to create this named list so I can change the facet labels on plot
 
@@ -45,7 +45,10 @@ tidy_int_reg_bag %>%
     facet_wrap(~ type, labeller = labeller(type = int_reg)) +
     coord_flip() +
     ylab("Median Swipe Count") +
-    xlab("House")
+    xlab("House") +
+    labs(title = "Median Lunch Swipe Counts") +
+    scale_fill_discrete(name = "Academic Year",
+                        labels = c("2017-2018", "2018-2019"))
 
 interhouse_flyby_increase <- tidy_int_reg_bag %>% 
   filter(house == "FlyBy",
