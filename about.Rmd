@@ -1,7 +1,4 @@
 ---
-title: "HUDS Student Traffic Patterns"
-author: "Kayla Manning"
-date: "2/25/2020"
 output: html_document
 ---
 
@@ -9,9 +6,12 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(gt)
+library(xml2)
 ```
 
 ## About
+
+### Project Data, Background, and Motivations
 
 My data contains total swipe counts for every Harvard College HUDS location, including FlyBy and Hillel. The swipes are broken down by category, including but not limited to "interhouse", "regular", "bagged", "employee", etc. Using the raw dates, I added columns that contain the day of the week and the academic year. The counts span the entirety of the 2017-2018 and 2018-2019 academic years.
 
@@ -34,4 +34,9 @@ tidy_int_reg_bag %>%
   slice(1:10) %>% 
   gt()
 ```
+
+### About Me
+
+My name is Kayla Manning, and I am a sophomore concentrating in Statistics with a secondary in Global Health and Health Policy. For any questions pertaining to this project, you can reach me at [kaylamanning@college.harvard.edu]().
+
 
