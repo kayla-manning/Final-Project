@@ -86,11 +86,26 @@ tidy_int_reg_bag %>%
   mutate(difference = `1819` - `1718`) %>% 
   arrange(desc(difference)) %>%
   select(house, difference) %>% 
-  gt(rowname_col = "house", 
-     groupname_col = FALSE) %>% 
-  cols_label("difference" = "Percent Change in Interhouse Swipes") %>% 
-  tab_header("Change in Interhouse at Breakfast")  %>% 
-  tab_footnote("Calculated as the difference in the percent of median interhouse swipes in 2018-2018 and 2018-2019", locations = cells_column_labels(columns = vars(difference)))
+  ggplot(aes(house, difference)) +
+  geom_col() +
+  coord_flip() +
+  labs(title = "Change in Interhouse at Breakfast",
+       subtitle = "Calculated as the difference in the percent of median \ninterhouse swipes in 2017-2018 and 2018-2019") +
+  xlab("Difference") +
+  ylab("House")
+
+# saving image for shiny
+
+ggsave("final_project_shiny/change-interhouse-meal/change_int_bfast.png")
+
+# commenting this out but I could get rid of the ggplot and add this to get a
+# nice gt table
+
+  # gt(rowname_col = "house", 
+  #    groupname_col = FALSE) %>% 
+  # cols_label("difference" = "Percent Change in Interhouse Swipes") %>% 
+  # tab_header("Change in Interhouse at Breakfast")  %>% 
+  # tab_footnote("Calculated as the difference in the percent of median interhouse swipes in 2017-2018 and 2018-2019", locations = cells_column_labels(columns = vars(difference)))
 
 # now lunch
 
@@ -110,11 +125,23 @@ tidy_int_reg_bag %>%
   mutate(difference = `1819` - `1718`) %>% 
   arrange(desc(difference)) %>%
   select(house, difference) %>% 
-  gt(rowname_col = "house", 
-     groupname_col = FALSE) %>% 
-  cols_label("difference" = "Percent Change in Interhouse Swipes") %>% 
-  tab_header("Change in Interhouse at Lunch") %>% 
-  tab_footnote("Calculated as the difference in the percent of median interhouse swipes in 2018-2018 and 2018-2019", locations = cells_column_labels(columns = vars(difference)))
+  ggplot(aes(house, difference)) +
+  geom_col() +
+  coord_flip() +
+  labs(title = "Change in Interhouse at Lunch",
+       subtitle = "Calculated as the difference in the percent of median \ninterhouse swipes in 2017-2018 and 2018-2019") +
+  xlab("Difference") +
+  ylab("House")
+
+# saving for access in shiny app
+
+ggsave("final_project_shiny/change-interhouse-meal/change_int_lunch.png")  
+
+  # gt(rowname_col = "house", 
+  #    groupname_col = FALSE) %>% 
+  # cols_label("difference" = "Percent Change in Interhouse Swipes") %>% 
+  # tab_header("Change in Interhouse at Lunch") %>% 
+  # tab_footnote("Calculated as the difference in the percent of median interhouse swipes in 2018-2018 and 2018-2019", locations = cells_column_labels(columns = vars(difference)))
 
 # dinner
 
@@ -134,11 +161,23 @@ tidy_int_reg_bag %>%
   mutate(difference = `1819` - `1718`) %>% 
   arrange(desc(difference)) %>%
   select(house, difference) %>% 
-  gt(rowname_col = "house", 
-     groupname_col = FALSE) %>% 
-  cols_label("difference" = "Percent Change in Interhouse Swipes") %>% 
-  tab_header("Change in Interhouse at Dinner")  %>% 
-  tab_footnote("Calculated as the difference in the percent of median interhouse swipes in 2018-2018 and 2018-2019", locations = cells_column_labels(columns = vars(difference)))
+  ggplot(aes(house, difference)) +
+  geom_col() +
+  coord_flip() +
+  labs(title = "Change in Interhouse at Dinner",
+       subtitle = "Calculated as the difference in the percent of median \ninterhouse swipes in 2017-2018 and 2018-2019") +
+  xlab("Difference") +
+  ylab("House")
+  
+# saving for shiny
+
+ggsave("final_project_shiny/change-interhouse-meal/change_int_dinner.png")
+
+  #   gt(rowname_col = "house", 
+  #    groupname_col = FALSE) %>% 
+  # cols_label("difference" = "Percent Change in Interhouse Swipes") %>% 
+  # tab_header("Change in Interhouse at Dinner")  %>% 
+  # tab_footnote("Calculated as the difference in the percent of median interhouse swipes in 2018-2018 and 2018-2019", locations = cells_column_labels(columns = vars(difference)))
 
 
 
@@ -153,6 +192,8 @@ tidy_int_reg_bag <- with(tidy_int_reg_bag,
 
 tidy_int_reg_bag$meal <- fct_relevel(tidy_int_reg_bag$meal, 
                                      c("Breakfast", "Lunch", "Dinner"))
+
+# swipe counts for each year by house, faceted by meal
 
 tidy_int_reg_bag %>%
   select(house, type, meal, year, count) %>% 
@@ -175,7 +216,30 @@ tidy_int_reg_bag %>%
     ylab("Median Swipe Counts")
 
 
+# swipe counts for each year by meal, faceted by house
+
+tidy_int_reg_bag %>%
+  select(house, type, meal, year, count) %>% 
+  filter(type %in% c("int", "grand_total"),
+         house != "FlyBy",
+         house != "Hillel",
+         house != "Annenberg") %>% 
+  group_by(house, year, meal, type) %>% 
+  summarize(avg = median(count, na.rm = TRUE)) %>% 
+  ggplot(aes(meal, avg, fill = year)) +
+    geom_col(position = position_dodge(-0.9)) +
+    facet_wrap(~ house) +
+    coord_flip() +
+    labs(title = "Swipe Counts by House and Meal") +
+    scale_fill_discrete(name = "Academic Year",
+                        labels = c("2017-2018", "2018-2019")) +
+    scale_x_discrete(limits = rev(levels(tidy_int_reg_bag$meal))) +
+    xlab("Location") +
+    ylab("Median Swipe Counts")
+
 ```
+
+
 
 ```{r flyby_increase}
 
@@ -184,7 +248,8 @@ tidy_int_reg_bag$day <- recode(tidy_int_reg_bag$day,
                                "Tue" = "Tuesday",
                                "Wed" = "Wednesday",
                                "Thu" = "Thursday",
-                               "Fri" = "Friday")
+                               "Fri" = "Friday") %>% 
+  fct_relevel(c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday"))
 
 tidy_int_reg_bag %>% 
   filter(house == "FlyBy",
@@ -203,6 +268,22 @@ tidy_int_reg_bag %>%
              increase = "Increase") %>% 
   cols_align("center") %>% 
   tab_footnote("Difference in Median Swipe Counts for 2017-2018 and 2018-2019 Academic Years", locations = cells_title("title"))
+
+# going to plot the increase column as a boxplot
+
+tidy_int_reg_bag %>% 
+  filter(house == "FlyBy",
+         meal == "Lunch") %>% 
+  ggplot(aes(year, count, fill = year)) +
+  geom_boxplot() +
+  facet_wrap("day") +
+  labs(title = "Distribution of Fly-By Traffic") +
+  scale_fill_discrete(name = "Academic Year",
+                      labels = c("2017-2018", "2018-2019")) +
+  xlab("Academic Year") +
+  scale_x_discrete(labels = c("2017-2018", "2018-2019")) +
+  ylab("Count")
+  
 
 ```
 

@@ -1,5 +1,6 @@
 
 library(shiny)
+library(shinythemes)
 
 # using the basic ui setup example from the textbook; will modify to fit my
 # unique project
@@ -7,16 +8,16 @@ library(shiny)
 ui <- navbarPage(
   "HUDS Traffic Patterns in 2017-2018 and 2018-2019",
   tabPanel("Model",
-           fluidPage(
-             titlePanel("Model Title"),
+           fluidPage(theme = shinytheme("simplex"),
+             titlePanel("Change in Interhouse Swipes by Meal"),
              sidebarLayout(
                sidebarPanel(
                  selectInput(
-                   "plot_type",
-                   "Plot Type",
-                   c("Option A" = "a", "Option B" = "b")
+                   "meal",
+                   "Meal",
+                   c("Breakfast" = "bfast", "Lunch" = "lunch", "Dinner" = "dinner")
                  )),
-               mainPanel(plotOutput("line_plot")))
+               mainPanel(imageOutput("Image")))
            )),
   tabPanel("Discussion",
            titlePanel("Discussion Title"),
@@ -28,28 +29,22 @@ ui <- navbarPage(
 # for now I'm just copying and pasting the server example from the textbook
 # as well, but this will likely have to change a lot more than the ui template
 
-server <- function(input, output) {
-  output$line_plot <- renderPlot({
-    # Generate type based on input$plot_type from ui
+server <- function(input, output, session) {
+
+    # Send a pre-rendered image, and don't delete the image after sending it
+
+    output$Image <- renderImage({
+ 
+         # When input$n is 3, filename is ./images/image3.jpeg
+ 
+         filename <- normalizePath(file.path('./change-interhouse-meal',
+                                        paste('change_int_', input$meal, '.png', sep='')))
     
-    ifelse(
-      input$plot_type == "a",
-      
-      # If input$plot_type is "a", plot histogram of "waiting" column 
-      # from the faithful dataframe
-      
-      x   <- faithful[, 2],
-      
-      # If input$plot_type is "b", plot histogram of "eruptions" column
-      # from the faithful dataframe
-      
-      x   <- faithful[, 1]
-    )
+    # Return a list containing the filename and alt text
+  
+          list(src = filename)
     
-    # Draw the histogram with the specified number of bins
-    
-    hist(x, col = 'darkgray', border = 'white')
-  })
+  }, deleteFile = FALSE)
 }
 
 # Run the application 
