@@ -1,0 +1,11 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Discussion
+
+When looking at averages and measures of center in my data, I elected to use the robust measure of median over mean. In times at the beginning and end of breaks from school, HUDS only has certain dining halls open. For example, when students return from Winter Break, the dining halls open on a rolling basis, causing some dining halls to have uncharacteristically high swipe counts. These outliers make our data susceptible to skewness, which has an impact on the measures of mean and standard deviation. Because of this, I used median as my measure of choice.

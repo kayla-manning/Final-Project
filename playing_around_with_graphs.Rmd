@@ -32,11 +32,13 @@ tidy_int_reg_bag <- read_csv("raw-data/all_tidy.csv",
 int_reg <- c("Interhouse", "Regular")
 names(int_reg) <- c("int", "reg")
 
-# generating plot
+# generating plot that displays interhouse and regular side-by-side
 
 tidy_int_reg_bag %>% 
   filter(type %in% c("reg", "int"),
          house != "Annenberg",
+         house != "FlyBy",
+         house != "Hillel",
          meal == "Lunch") %>% 
   group_by(house, type, year) %>% 
   summarize(avg = median(count, na.rm = TRUE)) %>% 
@@ -46,9 +48,55 @@ tidy_int_reg_bag %>%
     coord_flip() +
     ylab("Median Swipe Count") +
     xlab("House") +
-    labs(title = "Median Lunch Swipe Counts") +
+    labs(title = "House Median Lunch Swipe Counts") +
     scale_fill_discrete(name = "Academic Year",
                         labels = c("2017-2018", "2018-2019"))
+
+ggsave("final_project_shiny/int-reg-lunch-houses/house_lunch_both.png")
+
+# now just interhouse
+
+tidy_int_reg_bag %>% 
+  filter(type == "int",
+         house != "Annenberg",
+         house != "FlyBy",
+         house != "Hillel",
+         meal == "Lunch") %>% 
+  group_by(house, type, year) %>% 
+  summarize(avg = median(count, na.rm = TRUE)) %>% 
+  ggplot(aes(house, avg, fill = year)) +
+    geom_col(position = position_dodge(-0.9)) +
+    facet_wrap(~ type, labeller = labeller(type = int_reg)) +
+    coord_flip() +
+    ylab("Median Swipe Count") +
+    xlab("House") +
+    labs(title = "House Median Lunch Swipe Counts, Interhouse Only") +
+    scale_fill_discrete(name = "Academic Year",
+                        labels = c("2017-2018", "2018-2019"))
+
+ggsave("final_project_shiny/int-reg-lunch-houses/house_lunch_int.png")
+
+# now just regular
+
+tidy_int_reg_bag %>% 
+  filter(type == "reg",
+         house != "Annenberg",
+         house != "FlyBy",
+         house != "Hillel",
+         meal == "Lunch") %>% 
+  group_by(house, type, year) %>% 
+  summarize(avg = median(count, na.rm = TRUE)) %>% 
+  ggplot(aes(house, avg, fill = year)) +
+    geom_col(position = position_dodge(-0.9)) +
+    facet_wrap(~ type, labeller = labeller(type = int_reg)) +
+    coord_flip() +
+    ylab("Median Swipe Count") +
+    xlab("House") +
+    labs(title = "House Median Lunch Swipe Counts, Residents Only") +
+    scale_fill_discrete(name = "Academic Year",
+                        labels = c("2017-2018", "2018-2019"))
+
+ggsave("final_project_shiny/int-reg-lunch-houses/house_lunch_reg.png")
 
 interhouse_flyby_increase <- tidy_int_reg_bag %>% 
   filter(house == "FlyBy",
@@ -303,7 +351,7 @@ tidy_int_reg_bag %>%
   ggplot(aes(day, counts, fill = variable)) +
   geom_col(position = "dodge") +
   labs(title = "Daily Distribution of Fly-By Traffic",
-       subtitle = "Comparing median swip counts for the 2017-2018 and 2018-2019 \nacademic years") +
+       subtitle = "Comparing median swipe counts for the 2017-2018 and 2018-2019 \nacademic years") +
   scale_fill_discrete(name = "Academic Year",
                       labels = c("2017-2018", "2018-2019")) +
   xlab("Day of the Week") +
