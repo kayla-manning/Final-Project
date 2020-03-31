@@ -87,9 +87,9 @@ ui <- navbarPage(
                        ))
                          )),
   tabPanel("Discussion",
-           includeHTML(file.path("../discussion.html"))),
+           includeHTML(file.path("htmls/discussion.html"))),
   tabPanel("About", 
-           includeHTML(file.path("../about.html"))))
+           includeHTML(file.path("htmls/about.html"))))
 
 # for now I'm just copying and pasting the server example from the textbook
 # as well, but this will likely have to change a lot more than the ui template
