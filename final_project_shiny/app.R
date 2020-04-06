@@ -8,9 +8,9 @@ library(shinythemes)
 
 ui <- navbarPage(
   "HUDS Traffic Patterns in 2017-2018 and 2018-2019 Academic Years",
-  tabPanel("Change in Interhouse Swipes by Meal",
+  tabPanel("Change in Percentage of Interhouse Swipes by Meal",
            fluidPage(theme = shinytheme("simplex"),
-             titlePanel("Change in Interhouse Swipes by Meal"),
+             titlePanel("Change in Percentage of Interhouse Swipes by Meal"),
              sidebarLayout(
                sidebarPanel(
                  verticalLayout(
@@ -30,9 +30,28 @@ ui <- navbarPage(
                     interhouse swipes between the two academic years. Select which
                     meal you would like to view from the drop-down menu."))),
                mainPanel(
-                   imageOutput("interhouse"),
+                   imageOutput("pct_interhouse"),
             ))
            )),
+  tabPanel("Change in Interhouse Swipes by Meal",
+           fluidPage(theme = shinytheme("simplex"),
+                     titlePanel("Change in Interhouse Swipes by Meal"),
+                     sidebarLayout(
+                       sidebarPanel(
+                         verticalLayout(
+                           selectInput(
+                             "meals",
+                             "Meal",
+                             c("Breakfast" = "bfast", "Lunch" = "lunch", "Dinner" = "dinner")
+                           ),
+                           p("Unlike the plots in the previous window, this plot just
+                             subtracts the median interhouse swipe counts in the 2017-2018
+                             academic year from the median interhouse swipe counts in the
+                             2018-2019 academic year."))),
+                       mainPanel(
+                         imageOutput("interhouse"),
+                       ))
+                         )),
   tabPanel("Daily Distributions of Fly-By Traffic",
            fluidPage(theme = shinytheme("simplex"),
                      titlePanel("Daily Distributions of Fly-By Traffic"),
@@ -98,7 +117,7 @@ server <- function(input, output, session) {
 
     # send a pre-rendered image, and don't delete the image after sending it
 
-    output$interhouse <- renderImage({
+    output$pct_interhouse <- renderImage({
  
          # will display appropriate image for input
  
@@ -110,6 +129,19 @@ server <- function(input, output, session) {
           list(src = filename)
     
   }, deleteFile = FALSE)
+    
+    output$interhouse <- renderImage({
+      
+      # will display appropriate image for input
+      
+      filename <- normalizePath(file.path('./raw-change-interhouse-meal',
+                                          paste('raw_change_int_', input$meals, '.png', sep='')))
+      
+      # return a list containing the filename
+      
+      list(src = filename)
+      
+    }, deleteFile = FALSE)
 
 
     # send a pre-rendered image, and don't delete the image after sending it

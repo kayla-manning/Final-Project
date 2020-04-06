@@ -134,7 +134,7 @@ tidy_int_reg_bag %>%
   mutate(difference = `1819` - `1718`) %>% 
   arrange(desc(difference)) %>%
   select(house, difference) %>% 
-  ggplot(aes(house, difference)) +
+  ggplot(aes(house, difference, fill = house)) +
   geom_col() +
   coord_flip() +
   labs(title = "Change in Interhouse at Breakfast",
@@ -173,7 +173,7 @@ tidy_int_reg_bag %>%
   mutate(difference = `1819` - `1718`) %>% 
   arrange(desc(difference)) %>%
   select(house, difference) %>% 
-  ggplot(aes(house, difference)) +
+  ggplot(aes(house, difference, fill = house)) +
   geom_col() +
   coord_flip() +
   labs(title = "Change in Interhouse at Lunch",
@@ -209,7 +209,7 @@ tidy_int_reg_bag %>%
   mutate(difference = `1819` - `1718`) %>% 
   arrange(desc(difference)) %>%
   select(house, difference) %>% 
-  ggplot(aes(house, difference)) +
+  ggplot(aes(house, difference, fill = house)) +
   geom_col() +
   coord_flip() +
   labs(title = "Change in Interhouse at Dinner",
@@ -231,6 +231,96 @@ ggsave("final_project_shiny/change-interhouse-meal/change_int_dinner.png")
 
 
 ```
+
+```{r raw_change_interhouse}
+
+# want to find the increase in median interhouse swipes for each meal week
+# breakfast first
+
+tidy_int_reg_bag %>%
+  select(house, type, meal, year, count) %>% 
+  filter(type == "int",
+         house != "FlyBy",
+         house != "Hillel",
+         meal != "Day Total",
+         meal == "Breakfast") %>% 
+  group_by(house, year, type) %>% 
+  summarize(count_type = median(count, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = year, values_from = count_type) %>% 
+  mutate(difference = `1819` - `1718`) %>% 
+  select(house, difference) %>% 
+  ggplot(aes(house, difference, fill = house)) +
+  geom_col() +
+  coord_flip() +
+  labs(title = "Change in Interhouse at Breakfast",
+       subtitle = "Calculated as the difference in median \ninterhouse swipes in 2017-2018 and 2018-2019") +
+  xlab("Difference") +
+  ylab("House")
+
+# saving image for shiny
+
+ggsave("final_project_shiny/raw-change-interhouse-meal/raw_change_int_bfast.png")
+
+# lunch
+
+# want to find the increase in median interhouse swipes for each meal week
+# breakfast first
+
+tidy_int_reg_bag %>%
+  select(house, type, meal, year, count) %>% 
+  filter(type == "int",
+         house != "FlyBy",
+         house != "Hillel",
+         meal != "Day Total",
+         meal == "Lunch") %>% 
+  group_by(house, year, type) %>% 
+  summarize(count_type = median(count, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = year, values_from = count_type) %>% 
+  mutate(difference = `1819` - `1718`) %>% 
+  select(house, difference) %>% 
+  ggplot(aes(house, difference, fill = house)) +
+  geom_col() +
+  coord_flip() +
+  labs(title = "Change in Interhouse at Lunch",
+       subtitle = "Calculated as the difference in median \ninterhouse swipes in 2017-2018 and 2018-2019") +
+  xlab("Difference") +
+  ylab("House")
+
+# saving image for shiny
+
+ggsave("final_project_shiny/raw-change-interhouse-meal/raw_change_int_lunch.png")
+
+# now dinner!
+
+# want to find the increase in median interhouse swipes for each meal week
+# breakfast first
+
+tidy_int_reg_bag %>%
+  select(house, type, meal, year, count) %>% 
+  filter(type == "int",
+         house != "FlyBy",
+         house != "Hillel",
+         meal != "Day Total",
+         meal == "Dinner") %>% 
+  group_by(house, year, type) %>% 
+  summarize(count_type = median(count, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = year, values_from = count_type) %>% 
+  mutate(difference = `1819` - `1718`) %>% 
+  select(house, difference) %>% 
+  ggplot(aes(house, difference, fill = house)) +
+  geom_col() +
+  coord_flip() +
+  labs(title = "Change in Interhouse at Dinner",
+       subtitle = "Calculated as the difference in median \ninterhouse swipes in 2017-2018 and 2018-2019") +
+  xlab("Difference") +
+  ylab("House")
+
+# saving image for shiny
+
+ggsave("final_project_shiny/raw-change-interhouse-meal/raw_change_int_dinner.png")
+
+```
+
 
 ```{r}
 
