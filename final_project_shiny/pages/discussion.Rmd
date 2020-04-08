@@ -8,4 +8,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Discussion
 
+### Median versus Mean
+
 When looking at averages and measures of center in my data, I elected to use the robust measure of median over mean. In times at the beginning and end of breaks from school, HUDS only has certain dining halls open. For example, when students return from Winter Break, the dining halls open on a rolling basis, causing some dining halls to have uncharacteristically high swipe counts. These outliers make our data susceptible to skewness, which has an impact on the measures of mean and standard deviation. Because of this, I used median as my measure of choice.
+
+### Including Change in Percent and Overall Count of Interhouse Swipes by Meal
+
+If you look at the tabs entitled "Change in Percentage of Interhouse Swipes by Meal" and "Change in Interhouse Swipes by Meal", these plots look relatively similar. The first page maps how much the *percentage* of interhouse swipes out of total swipes changed between the two academic years. The second page displays the difference in the median interhouse swipe *counts* between the two academic years for each house.
+
+While both graph methodologies illustrate the same concept of changes in interhouse traffic for each house, the two separate calculations provide different details about the situations in the individual houses. For example, consider Currier at lunchtime for both scenarios. The *percentage* of interhouse swipes in Currier at lunch increased by a relatively larger magnitude more than the *counts* of interhouse swipes in Currier at lunch when comparing the size of the bars to the other houses. This means that the count of interhouse swipes in Currier increased by more than the grand total of swipes in Currier. In this specific case, Currier saw an average of 5 more interhouse swipes at lunchtime in the 2018-2019 academic year but an average decrease of 9 in lunch swipes overall.

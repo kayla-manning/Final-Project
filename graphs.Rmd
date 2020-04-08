@@ -463,10 +463,9 @@ tidy_int_reg_bag %>%
   filter(variable == "1718") %>% 
   ggplot(aes(day, counts, fill = variable)) +
   geom_col(position = "dodge") +
-  labs(title = "Daily Distribution of Fly-By Traffic",
-       subtitle = "In terms of median swipe counts for the 2017-2018 academic year") +
-  scale_fill_discrete(name = "Academic Year",
-                      labels = c("2017-2018")) +
+  labs(title = "Daily Distribution of Fly-By Traffic in 2017-2018",
+       subtitle = "In terms of median swipe counts") +
+  theme(legend.position = "none") +
   xlab("Day of the Week") +
   ylab("Median Swipe Count")
 
@@ -486,10 +485,9 @@ tidy_int_reg_bag %>%
   filter(variable == "1819") %>% 
   ggplot(aes(day, counts, fill = variable)) +
   geom_col(position = "dodge") +
-  labs(title = "Daily Distribution of Fly-By Traffic",
-       subtitle = "In terms of median swipe counts for the 2018-2019 academic year") +
-  scale_fill_discrete(name = "Academic Year",
-                      labels = c("2018-2019")) +
+  labs(title = "Daily Distribution of Fly-By Traffic in 2018-2019",
+       subtitle = "In terms of median swipe counts") +
+  theme(legend.position = "none") +
   xlab("Day of the Week") +
   ylab("Median Swipe Count")
 
@@ -511,8 +509,7 @@ tidy_int_reg_bag %>%
   geom_col(position = "dodge") +
   labs(title = "Increase in Daily Distribution of Fly-By Traffic",
        subtitle = "The increase in median swipe counts for the 2017-2018 and 2018-2019 \nacademic years") +
-  scale_fill_discrete(name = "Academic Year",
-                      labels = c("Increase")) +
+  theme(legend.position = "none") +
   xlab("Day of the Week") +
   ylab("Difference in Median Swipe Counts")
 

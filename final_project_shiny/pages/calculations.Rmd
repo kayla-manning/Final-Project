@@ -1,0 +1,142 @@
+---
+title: "Calculations"
+author: "Kayla Manning"
+date: "4/7/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(broom)
+
+tidy_int_reg_bag <- read_csv("all_tidy.csv",
+                             col_types = cols(col_date(format = ''),
+                                             col_character(),
+                                             col_character(),
+                                             col_character(),
+                                             col_character(),
+                                             col_character(),
+                                             col_double()))
+
+```
+
+```{r sd_total_swipes}
+
+# looking at the standard deviation from year to year
+# this is the grand total of swipes (resident, interhouse, etc.) at lunch for
+# each house
+
+tidy_int_reg_bag %>% 
+  group_by(year, meal, house, type) %>% 
+  filter(meal != "Brain Break",
+         type == "grand_total",
+         meal == "Lunch") %>% 
+  summarise(iqr = IQR(count, na.rm = TRUE)) %>% 
+  arrange(desc(iqr)) %>% 
+  select(year, house, iqr) %>% 
+  pivot_wider(names_from = year, values_from = iqr) %>% 
+  mutate(iqr_increase = `1819` - `1718`) %>% 
+  arrange(desc(iqr_increase))
+
+```
+
+```{r model_counts_by_house_day}
+
+# overall, Tuesday has most swipes, while Saturday & Friday (intercept) have the
+# least; Sunday is the only day without a significant difference from Friday
+# swipe counts
+
+tidy_int_reg_bag %>% 
+  lm(count ~ day, data = .) %>% 
+  tidy() %>%
+  arrange(desc(estimate)) %>% 
+  filter(p.value < 0.05)
+
+# now looking at counts of interhouse swipes by days of the week; Wednesday has
+# most interhouse swipes, while Saturday, Friday, and Sunday have the least
+# Sunday has an insignificant difference from the baseline of Friday
+
+tidy_int_reg_bag %>% 
+  filter(type == "int") %>% 
+  lm(count ~ day, data = .) %>% 
+  tidy() %>% 
+  arrange(desc(estimate)) %>% 
+  filter(p.value < 0.05)
+
+# interhouse swipes by meal; dinner actually has most 
+
+tidy_int_reg_bag %>% 
+  filter(type == "int",
+         meal != "Day Total") %>% 
+  lm(count ~ meal, data = .) %>% 
+  tidy()
+
+# lunch interhouse swipes by house
+
+tidy_int_reg_bag %>% 
+  filter(type == "int",
+         meal == "Lunch",
+         house != "FlyBy",
+         house != "Hillel") %>% 
+  lm(count ~ house, data = .) %>% 
+  tidy() %>% 
+  arrange(desc(estimate))
+
+# lunch interhouse swipes by year; insignificant increase overall
+
+tidy_int_reg_bag %>% 
+  filter(type == "int",
+         meal == "Lunch",
+         house != "FlyBy",
+         house != "Hillel") %>% 
+  lm(count ~ year, data = .) %>% 
+  tidy() %>% 
+  arrange(desc(estimate))
+
+# will look at fitted values for predicting average number of interhouse swipes
+# in each house for each year and then calculated the difference between these
+# two fitted values
+
+tidy_int_reg_bag %>% 
+  filter(type == "int",
+         meal == "Lunch",
+         house != "FlyBy",
+         house != "Hillel") %>% 
+  lm(count ~ year * house, data = .) %>% 
+  augment() %>% 
+  group_by(year, house) %>% 
+  summarize(fitted = mean(.fitted)) %>% 
+  arrange(desc(fitted)) %>% 
+  pivot_wider(names_from = year, values_from = fitted) %>% 
+  mutate(increase = `1819` - `1718`) %>% 
+  arrange(desc(increase))
+
+```
+
+```{r currier_discussion_calculations}
+
+# looking at the difference in grand_total median swipe counts between the two years
+
+tidy_int_reg_bag %>% 
+  filter(meal == "Lunch",
+         house == "Currier",
+         type == "grand_total") %>% 
+  group_by(year) %>% 
+  summarise(median = median(count)) %>% 
+  pivot_wider(names_from = year, values_from = median) %>% 
+  summarise(diff = `1819` - `1718`)
+
+# now doing the same but for interhouse median swipe counts
+
+tidy_int_reg_bag %>% 
+  filter(meal == "Lunch",
+         house == "Currier",
+         type == "int") %>% 
+  group_by(year) %>% 
+  summarise(median = median(count, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = year, values_from = median) %>% 
+  summarise(diff = `1819` - `1718`)
+
+```
+
