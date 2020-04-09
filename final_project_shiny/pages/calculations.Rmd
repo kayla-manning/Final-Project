@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(broom)
+library(infer)
 
 tidy_int_reg_bag <- read_csv("all_tidy.csv",
                              col_types = cols(col_date(format = ''),
@@ -113,6 +114,104 @@ tidy_int_reg_bag %>%
   arrange(desc(increase))
 
 ```
+
+```{r trying_to_bootstrap}
+
+# I want to create a function that randomly assigns a certain count of swipes to
+# each house and then calculate the percentage that are interhouse. Then, I will
+# plot the simulated distribution of interhouse swipes and then a line with the
+# actual total interhouse swipes
+
+set.seed(2020)
+nreps <- 500
+
+pct_int <- tidy_int_reg_bag %>% 
+  filter(type %in% c("int", "grand_total")) %>% 
+  pivot_wider(names_from = type, values_from = count) %>% 
+  mutate(pct_int = int / grand_total * 100) %>% 
+  select(house, year, pct_int)
+
+boot <- tidy_int_reg_bag %>% 
+  rep_sample_n(size = nrow(.), replace = TRUE, reps = nreps) %>% 
+  group_by(replicate, type) %>% 
+  summarise(avg_count = mean(count, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = type, values_from = avg_count) %>% 
+  mutate(pct_int = int / grand_total * 100)
+
+boot %>% 
+  ggplot(aes(pct_int)) +
+  geom_histogram(bins = 50) +
+  scale_x_continuous() +
+  geom_vline(xintercept = mean(pct_int %>% 
+                                 filter(house == "Lowell") %>% 
+                                 pull(pct_int), na.rm = TRUE),
+             color = "blue") +
+  geom_vline(xintercept = mean(pct_int %>% 
+                                 filter(house == "Adams") %>% 
+                                 pull(pct_int), na.rm = TRUE),
+             color = "red") +
+  geom_vline(xintercept = mean(pct_int %>% 
+                                 filter(house == "Currier") %>% 
+                                 pull(pct_int), na.rm = TRUE),
+             color = "green") 
+
+
+
+```
+
+
+```{r trying_to_bootstrap_again}
+
+# first I want to find how many interhouse diners there are on any given day in
+# each house ; will use lunch as meal of interest. there are 372 unique dates in
+# my data set, so I want to randomly selected that many rows for each replicate
+# and then randomly assign a house to each proportion.
+
+set.seed(2019)
+
+houses <- unique(tidy_int_reg_bag$house)
+
+pct <- tidy_int_reg_bag %>% 
+  filter(meal == "Lunch",
+         type %in% c("int", "grand_total")) %>% 
+  group_by(date, type, house) %>% 
+  summarise(day_total = sum(count, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = type, values_from = day_total) %>% 
+  mutate(pct_int = int / grand_total * 100) 
+
+pct %>% 
+  select(date, pct_int) %>% 
+  rep_sample_n(size = 372, replace = TRUE, reps = nreps) %>% 
+  ungroup() %>% 
+  mutate(houses = sample(houses, size = nrow(.), replace = TRUE)) %>% 
+  
+  # now I'm grouping by replicate and house to find the average percent of
+  # interhouse diners in each house for each replicate
+  
+  group_by(replicate, houses) %>% 
+  summarise(avg_pct_int = mean(pct_int, na.rm = TRUE)) %>% 
+  
+  # will add a column with the true average percentage of interhouse diners from
+  # the original dataset so I can easily plot a vertical line on each of the
+  # histograms that I'm about to generate
+  
+  mutate(actual_pct_int = pct %>% 
+           group_by(house) %>% 
+           summarise(actual_pct_int = mean(pct_int, na.rm = TRUE)) %>% 
+           pull(actual_pct_int)) %>% 
+  
+  # next, I want to plot the values for each house on a histogram, with a
+  # vertical line for the actual percent of interhouse diners for each house
+  
+  ggplot(aes(avg_pct_int, fill = houses)) +
+  geom_histogram() +
+  facet_wrap(~ houses)
+  
+  
+
+```
+
+
 
 ```{r currier_discussion_calculations}
 
