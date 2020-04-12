@@ -162,25 +162,35 @@ boot %>%
 
 ```{r trying_to_bootstrap_again}
 
-# first I want to find how many interhouse diners there are on any given day in
-# each house ; will use lunch as meal of interest. there are 372 unique dates in
-# my data set, so I want to randomly selected that many rows for each replicate
-# and then randomly assign a house to each proportion.
+# first I want to find how many total interhouse diners there are on any given
+# day in each house (all three meals). there are 372 unique dates in my data
+# set, so I want to randomly selected that many rows for each replicate and then
+# randomly assign a house to each proportion.
 
 set.seed(2019)
 
-houses <- unique(tidy_int_reg_bag$house)
+houses <- tidy_int_reg_bag %>% 
+  select(house) %>% 
+  filter(house != "Hillel",
+         house != "FlyBy",
+         house != "Annenberg") %>% 
+  unique() %>% 
+  pull()
 
 pct <- tidy_int_reg_bag %>% 
-  filter(meal == "Lunch",
-         type %in% c("int", "grand_total")) %>% 
+  filter(type %in% c("int", "grand_total"),
+         house != "Hillel",
+         house != "FlyBy",
+         house != "Annenberg") %>% 
   group_by(date, type, house) %>% 
   summarise(day_total = sum(count, na.rm = TRUE)) %>% 
   pivot_wider(names_from = type, values_from = day_total) %>% 
-  mutate(pct_int = int / grand_total * 100) 
+  mutate(pct_int = int / grand_total * 100) %>% 
+  group_by(house) %>% 
+  mutate(actual_pct_int = mean(pct_int))
 
 pct %>% 
-  select(date, pct_int) %>% 
+  select(date, pct_int, actual_pct_int) %>% 
   rep_sample_n(size = 372, replace = TRUE, reps = nreps) %>% 
   ungroup() %>% 
   mutate(houses = sample(houses, size = nrow(.), replace = TRUE)) %>% 
@@ -206,6 +216,8 @@ pct %>%
   ggplot(aes(avg_pct_int, fill = houses)) +
   geom_histogram() +
   facet_wrap(~ houses) +
+  geom_vline(aes(xintercept = actual_pct_int)) +
+  
   
   # now adding/fixing labels to make the plot more appealing
   

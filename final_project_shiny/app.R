@@ -105,6 +105,8 @@ ui <- navbarPage(
                          imageOutput("house_lunch")
                        ))
                          )),
+  tabPanel("Simulated Distributions of Interhouse Swipes",
+           includeHTML(file.path("pages/boot_int_pct.html"))),
   tabPanel("Discussion",
            includeHTML(file.path("pages/discussion.html"))),
   tabPanel("About", 

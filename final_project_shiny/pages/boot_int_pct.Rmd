@@ -1,0 +1,130 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE)
+
+# necessary packages
+
+library(tidyverse)
+library(infer)
+
+# loading data because I need that
+
+tidy_int_reg_bag <- read_csv("all_tidy.csv",
+                             col_types = cols(col_date(format = ''),
+                                             col_character(),
+                                             col_character(),
+                                             col_character(),
+                                             col_character(),
+                                             col_character(),
+                                             col_double()))
+
+```
+
+## Simulated Percentage of Interhouse Swipes Compared to Actual Percentage of Interhouse Swipes
+
+### Model Explanation
+
+Each distribution in the below plot represents the average percentage of interhouse swipes if all houses had an equal chance of observing any percentage of interhouse swipes. In other words, I randomly assigned houses to the daily observed percentages of interhouse swipes for each house many times and then plotted the resulting distribution of averages. The vertical lines for each plot represent the true percentage of interhouse swipes for each house over the two academic years.
+
+To get into more detail, I first calculated the percentage of interhouse swipes out of total swipes for every house on each date in the dataset. Then, I ran a bootstrapped random sample of the dataset, drawing 1000 samples of size 372 * 12 (the total number of dates in the dataset multiplied by the total number of houses). After drawing these samples, I randomly assigned a house to each percentage of interhouse swipes.
+
+```{r data_and_graph}
+
+# first I want to find how many total interhouse diners there are on any given
+# day in each house (all three meals). there are 372 unique dates in my data
+# set, so I want to randomly selected that many rows multiplied by 12 (the total
+# number of houses) for each replicate and then randomly assign a house to each
+# proportion.
+
+set.seed(2019)
+nreps <- 1000
+
+# I just want the upperclassmen houses, so I will remove those that are not. I
+# need to create this vector so that I can randomly assign houses to percentages
+# in the near future.
+
+houses <- tidy_int_reg_bag %>% 
+  select(house) %>% 
+  filter(house != "Hillel",
+         house != "FlyBy",
+         house != "Annenberg") %>% 
+  unique() %>% 
+  pull()
+
+pct <- tidy_int_reg_bag %>% 
+  filter(type %in% c("int", "grand_total"),
+         house != "Hillel",
+         house != "FlyBy",
+         house != "Annenberg") %>% 
+  group_by(date, type, house) %>% 
+  summarise(day_total = sum(count, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = type, values_from = day_total) %>% 
+  mutate(pct_int = int / grand_total * 100) %>% 
+  group_by(house) %>% 
+  mutate(actual_pct_int = mean(pct_int))
+
+pct %>% 
+  select(house, date, pct_int, actual_pct_int) %>% 
+  rep_sample_n(size = 372 * 12, replace = TRUE, reps = nreps) %>% 
+  ungroup() %>% 
+  mutate(houses = sample(houses, size = nrow(.), replace = TRUE)) %>% 
+  
+  # now I'm grouping by replicate and house to find the average percent of
+  # interhouse diners in each house for each replicate
+  
+  group_by(replicate, houses) %>% 
+  summarise(avg_pct_int = mean(pct_int, na.rm = TRUE)) %>% 
+  
+  # will add a column with the true average percentage of interhouse diners from
+  # the original dataset so I can easily plot a vertical line on each of the
+  # histograms that I'm about to generate
+  
+  mutate(actual_pct_int = pct %>% 
+           group_by(house) %>% 
+           summarise(actual_pct_int = mean(pct_int, na.rm = TRUE)) %>% 
+           pull(actual_pct_int)) %>% 
+  
+  # next, I want to plot the values for each house on a histogram, with a
+  # vertical line for the actual percent of interhouse diners for each house
+  
+  ggplot(aes(avg_pct_int, fill = houses)) +
+  geom_histogram(bins = 50) +
+  facet_wrap(~ houses) +
+  geom_vline(aes(xintercept = actual_pct_int)) +
+  
+  
+  # now adding/fixing labels to make the plot more appealing
+  
+  labs(title = "Bootstrapped Percentages of Interhouse versus Actual Percentages",
+       fill = "Houses",
+       subtitle = "Vertical Line Represents Each House's True Percentage of Interhouse Swipes") +
+  ylab("Count") +
+  xlab("Simulated Median Percentage of Interhouse Swipes")
+  
+  
+
+
+```
+
+
+## Discussion
+
+### River Central
+
+River Central is the only neighborhood where all of its houses have a greater percentage of interhouse swipes than average. This relative anomaly makes sense, however, due to the convenient location of each of the houses. For the 2017-2018 and 2018-2019 academic years, students dining at Lowell at in the "Lowtel" swing housing facility just outside the gates of Tercentenary Theater. This location is easily the closest to the heart of campus, and Adams and Quincy only required a couple of extra minutes of walking. I hypothesize that the majority of interhouse swipes at these three locations were from students living in other housing neighborhoods since these locations are notably closer than others.
+
+### The Quad
+
+Not surprisingly, Cabot and Pforzheimer have a significantly smaller percentage of interhouse swipes than if these percentages were randomly assigned. However, it is a bit surprising that Currier has a greater than average percentage of interhouse swipes. I hypothesize that Currier interhouse swipes largely come from other Quad residents. This makes sense because those students would have made the hike over there, but they may have a preference for Currier's allegedly "superior" dining facility and food quality.
+
+### River East
+
+Winthrop appears to be students' top choice when they are dining in River East. While Kirkland has the closes location to the Yard, students may opt for Winthrop because it is newly renovated?
+
+### River West
+
+Following the theme seen in River East, Dunster has the greatest percentage of interhouse swipes out of the three River West Houses and it is the only with a percentage that is either at or above average for interhouse swipes. Potentially the newly renovated houses do indeed attract more interhouse diners.
