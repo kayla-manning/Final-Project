@@ -205,7 +205,14 @@ pct %>%
   
   ggplot(aes(avg_pct_int, fill = houses)) +
   geom_histogram() +
-  facet_wrap(~ houses)
+  facet_wrap(~ houses) +
+  
+  # now adding/fixing labels to make the plot more appealing
+  
+  labs(title = "Bootstrapped Percentages of Interhouse versus Actual Percentages",
+       fill = "Houses") +
+  ylab("Count") +
+  xlab("Simulated Median Percentage of Interhouse Swipes")
   
   
 
