@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(broom)
 library(infer)
+library(gganimate)
 
 tidy_int_reg_bag <- read_csv("all_tidy.csv",
                              col_types = cols(col_date(format = ''),
@@ -255,6 +256,92 @@ tidy_int_reg_bag %>%
   summarise(median = median(count, na.rm = TRUE)) %>% 
   pivot_wider(names_from = year, values_from = median) %>% 
   summarise(diff = `1819` - `1718`)
+
+```
+
+```{r dist_reg}
+
+# adding distance in feet from John Harvard to the houses and neighborhood
+
+dist_data <- tidy_int_reg_bag %>% 
+  filter(house != "Annenberg",
+         house != "Hillel",
+         type %in% c("int", "grand_total")) %>% 
+  mutate(distance = ifelse(house == "Adams", 1024.32, NA),
+         distance = ifelse(house == "Quincy", 1436.10, distance),
+         distance = ifelse(house == "Lowell", 1062.31, distance),
+         distance = ifelse(house == "Leverett", 1750.81, distance),
+         distance = ifelse(house == "Dunster", 2180.38, distance),
+         distance = ifelse(house == "Mather", 2264.54, distance),
+         distance = ifelse(house == "Winthrop", 1599.63, distance),
+         distance = ifelse(house == "Eliot", 1877.21, distance),
+         distance = ifelse(house == "Kirkland", 1740.05, distance),
+         distance = ifelse(house == "Cabot", 3173.44, distance),
+         distance = ifelse(house == "Currier", 3486.88, distance),
+         distance = ifelse(house == "Pforzheimer", 3457.24, distance),
+         distance = ifelse(house == "FlyBy", 641.54, distance),
+         neighborhood = ifelse(house %in% c("Adams", "Quincy", "Lowell"), 
+                               "River Central", NA),
+         neighborhood = ifelse(house %in% c("Leverett", "Dunster", "Mather"),
+                               "River West", neighborhood),
+         neighborhood = ifelse(house %in% c("Winthrop", "Eliot", "Kirkland"), 
+                               "River East", neighborhood),
+         neighborhood = ifelse(house %in% c("Cabot", "Currier", "Pforzheimer"),
+                               "Quad", neighborhood),
+         neighborhood = ifelse(house == "FlyBy", "Yard", neighborhood)) %>% 
+  group_by(house, year, type, distance, neighborhood) %>% 
+  summarize(avg_count = median(count, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = type, values_from = avg_count)
+
+# now I want to first make a linear model predicting total count from variables
+
+dist_data %>% 
+  lm(grand_total ~ distance, data = .) %>% 
+  augment(newdata = dist_data, 
+          ID = "house",
+          type.predict = "response",
+          type.residuals = "response") %>% 
+  mutate(.resid = grand_total - .fitted) %>% 
+  ggplot(aes(distance, grand_total, color = house)) +
+  geom_point() +
+  transition_manual(year)
+
+
+tidy_int_reg_bag %>% 
+  filter(house != "Annenberg",
+         house != "Hillel",
+         type %in% c("int", "grand_total")) %>% 
+  mutate(distance = ifelse(house == "Adams", 1024.32, NA),
+         distance = ifelse(house == "Quincy", 1436.10, distance),
+         distance = ifelse(house == "Lowell", 1062.31, distance),
+         distance = ifelse(house == "Leverett", 1750.81, distance),
+         distance = ifelse(house == "Dunster", 2180.38, distance),
+         distance = ifelse(house == "Mather", 2264.54, distance),
+         distance = ifelse(house == "Winthrop", 1599.63, distance),
+         distance = ifelse(house == "Eliot", 1877.21, distance),
+         distance = ifelse(house == "Kirkland", 1740.05, distance),
+         distance = ifelse(house == "Cabot", 3173.44, distance),
+         distance = ifelse(house == "Currier", 3486.88, distance),
+         distance = ifelse(house == "Pforzheimer", 3457.24, distance),
+         distance = ifelse(house == "FlyBy", 641.54, distance),
+         neighborhood = ifelse(house %in% c("Adams", "Quincy", "Lowell"), 
+                               "River Central", NA),
+         neighborhood = ifelse(house %in% c("Leverett", "Dunster", "Mather"),
+                               "River West", neighborhood),
+         neighborhood = ifelse(house %in% c("Winthrop", "Eliot", "Kirkland"), 
+                               "River East", neighborhood),
+         neighborhood = ifelse(house %in% c("Cabot", "Currier", "Pforzheimer"),
+                               "Quad", neighborhood),
+         neighborhood = ifelse(house == "FlyBy", "Yard", neighborhood)) %>% 
+  group_by(house, type, distance, neighborhood, date) %>% 
+  summarize(avg_count = median(count, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = type, values_from = avg_count) %>% 
+  arrange(date) %>% 
+  ggplot(aes(distance, grand_total, color = house)) +
+  geom_point() +
+  labs(subtitle = "Date: {frame_time}") +
+  transition_time(date)
+
 
 ```
 
