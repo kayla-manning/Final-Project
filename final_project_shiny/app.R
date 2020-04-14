@@ -5,6 +5,46 @@ library(shinythemes)
 # using the basic ui setup example from the textbook; will modify to fit my
 # unique project
 
+# first I need to load data and packages
+
+library(tidyverse)
+library(gganimate)
+library(lubridate)
+library(gt)
+
+tidy_int_reg_bag <- read_csv("pages/all_tidy.csv",
+                             col_types = cols(col_date(format = ''),
+                                              col_character(),
+                                              col_character(),
+                                              col_character(),
+                                              col_character(),
+                                              col_character(),
+                                              col_double()))
+anim_data <- read_csv("pages/anim_data.csv")
+
+# this is the data I will use for my gt table
+
+my_table <- function(x) {
+  anim_data %>% 
+  filter(house == x) %>% 
+  select(month_year, house, avg_int, avg_total, distance) %>% 
+    ungroup() %>% 
+    mutate(avg_int = round(avg_int),
+           avg_total = round(avg_total),
+           distance = paste(round(distance), "feet from John Harvard Statue"),
+           month_year = month_year %>% 
+             as_factor() %>% 
+             fct_relevel("8/2017", "9/2017", "9/2018", "10/2017", 
+                         "10/2018", "11/2017", "11/2018", "12/2017", "12/2018")) %>% 
+    group_by(house, distance) %>% 
+    gt() %>% 
+    cols_label(distance = "Distance from John Harvard", 
+               month_year = "Month",
+               avg_int = "Interhouse Swipes per Meal",
+               avg_total = "Total Swipes per Meal") %>% 
+    tab_header(title = "Monthly Average Interhouse and Total Swipes per Meal")
+}
+
 
 ui <- navbarPage(
   "HUDS Traffic Patterns in 2017-2018 and 2018-2019 Academic Years",
@@ -49,7 +89,7 @@ ui <- navbarPage(
                              academic year from the median interhouse swipe counts in the
                              2018-2019 academic year."))),
                        mainPanel(
-                         imageOutput("interhouse"),
+                         imageOutput("interhouse")
                        ))
                          )),
   tabPanel("Daily Distributions of Fly-By Traffic",
@@ -104,6 +144,29 @@ ui <- navbarPage(
                        mainPanel(
                          imageOutput("house_lunch")
                        ))
+                         )),
+  tabPanel("Change in Monthly Average Swipes per Meal",
+           fluidPage(theme = shinytheme("simplex"),
+                     titlePanel("Change in Average Monthly Swipes per Meal"),
+                     sidebarLayout(
+                       sidebarPanel(
+                         verticalLayout(
+                           selectInput(
+                             "house",
+                             "House",
+                             c(tidy_int_reg_bag %>% 
+                                 filter(house != "Annenberg",
+                                        house != "Hillel") %>% 
+                                 pull(house))
+                           ),
+                           p("For a closer look at the monthly median swipe counts
+                             per meal by house, select the house of interest from 
+                             the drop-down bar."))),
+                       mainPanel(
+                         splitLayout(
+                          imageOutput("my_plot", width = "700px", height = "600px"),
+                          gt_output("table")
+                       )))
                          )),
   tabPanel("Simulated Distributions of Interhouse Swipes",
            includeHTML(file.path("pages/boot_int_pct.html"))),
@@ -177,6 +240,20 @@ server <- function(input, output, session) {
     list(src = filename)
     
   }, deleteFile = FALSE)
+  
+  # now trying to get my animation and gt table on the same page
+  
+  output$my_plot <- renderImage({
+    list(src = "pages/my_anim.gif",
+         contentType = 'image/gif')
+  },
+    deleteFile = FALSE)
+  
+  output$table <-  render_gt(
+      expr = my_table(input$house),
+      width = 500,
+      height = 600
+    )
   
   }
 

@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(gganimate)
+library(lubridate)
+library(gt)
 
 tidy_int_reg_bag <- read_csv("all_tidy.csv",
                              col_types = cols(col_date(format = ''),
@@ -23,7 +25,7 @@ tidy_int_reg_bag <- read_csv("all_tidy.csv",
 
 ```{r}
 
-p <- tidy_int_reg_bag %>% 
+anim_data <- tidy_int_reg_bag %>% 
   filter(house != "Annenberg",
          house != "Hillel",
          type %in% c("int", "grand_total")) %>% 
@@ -49,19 +51,68 @@ p <- tidy_int_reg_bag %>%
          neighborhood = ifelse(house %in% c("Cabot", "Currier", "Pforzheimer"),
                                "Quad", neighborhood),
          neighborhood = ifelse(house == "FlyBy", "Yard", neighborhood)) %>% 
-  group_by(house, type, distance, neighborhood, date) %>% 
+  group_by(house, type, distance, neighborhood, date, year) %>% 
   summarize(avg_count = median(count, na.rm = TRUE)) %>% 
   pivot_wider(names_from = type, values_from = avg_count) %>% 
+  
+  # I want to create a month column so the animation isn't jumping around as
+  # much (as it is right now with the daily values); I will find the average
+  # counts by month. In order to do this, I will have to group by month and year
+  # before doing the summarize command.
+  
   arrange(date) %>% 
-  ggplot(aes(distance, int, color = house)) +
+  mutate(month_year = paste(month(date), year(date), sep = "/")) %>% 
+  group_by(month_year, distance, house, neighborhood) %>% 
+  summarize(avg_int = median(int, na.rm = TRUE),
+            avg_total = median(grand_total, na.rm = TRUE))
+
+# saving this data as a csv file so I can easily call for it in my shiny app
+
+write_csv(anim_data, "anim_data.csv")
+
+p <- anim_data %>% 
+  mutate(House = house) %>% 
+  ggplot(aes(distance, avg_int, color = House)) +
   geom_point() +
-  geom_label(aes(label = house, fill = neighborhood), 
+  geom_label(aes(label = House), 
              label.padding = unit(0.1, "lines")) +
-  labs(subtitle = "Date: {frame_time}") +
-  transition_time(date) +
-  scale_y_continuous(limits = c(0, 800))
+  labs(title = "Relationship between Time, Distance, and House \non Interhouse Swipe Counts",
+       subtitle = "Date: {current_frame}") +
+  transition_manual(month_year) +
+  scale_y_continuous(limits = c(0, 600)) +
+  xlab("Distance (ft) from John Harvard Statue") +
+  ylab("Median Interhouse Swipes per Meal")
 
 animate(p, fps = 5)
 
+anim_save("my_anim.gif")
+
+# now I want to produce a gt() table so that you can look at the data in my knit
+# html as well since the animation may move too fast
+
+anim_data %>% 
+  select(month_year, house, avg_int, avg_total, distance) %>% 
+  ungroup() %>% 
+  mutate(avg_int = round(avg_int),
+         avg_total = round(avg_total),
+         distance = paste(round(distance), "feet from John Harvard Statue"),
+         month_year = month_year %>% 
+           as_factor() %>% 
+           fct_relevel("8/2017", "9/2017", "9/2018", "10/2017", 
+                       "10/2018", "11/2017", "11/2018", "12/2017", "12/2018")) %>% 
+  group_by(house, distance) %>% 
+  gt() %>% 
+  cols_label(distance = "Distance from John Harvard", 
+             month_year = "Month",
+             avg_int = "Interhouse Swipes per Meal",
+             avg_total = "Total Swipes per Meal") %>% 
+  tab_header(title = "Monthly Average Interhouse and Total Swipes per Meal")
+
+test_model <- lm(avg_int ~ distance, data = anim_data)
+summary(test_model)
+
+testgrid <- seq(min(anim_data$distance), max(anim_data$distance), 1)
+
+plot(testgrid, predict(test_model, newdata = list(distance = testgrid)))
 ```
 

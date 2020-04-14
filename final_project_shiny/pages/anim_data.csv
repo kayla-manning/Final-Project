@@ -1,0 +1,234 @@
+month_year,distance,house,neighborhood,avg_int,avg_total
+1/2018,641.54,FlyBy,Yard,361.5,363.5
+1/2018,1024.32,Adams,River Central,113.75,431.25
+1/2018,1062.31,Lowell,River Central,91,341.75
+1/2018,1436.1,Quincy,River Central,130.75,474.25
+1/2018,1599.63,Winthrop,River East,92,348
+1/2018,1740.05,Kirkland,River East,60.25,311.25
+1/2018,1750.81,Leverett,River West,58.5,322
+1/2018,1877.21,Eliot,River East,45,321
+1/2018,2180.38,Dunster,River West,57.25,284.75
+1/2018,2264.54,Mather,River West,26.25,235.25
+1/2018,3173.44,Cabot,Quad,24.75,187
+1/2018,3457.24,Pforzheimer,Quad,14.75,210
+1/2018,3486.88,Currier,Quad,46,258.5
+1/2019,641.54,FlyBy,Yard,500.5,504
+1/2019,1024.32,Adams,River Central,118.5,450.25
+1/2019,1062.31,Lowell,River Central,158.25,453
+1/2019,1436.1,Quincy,River Central,94,420.5
+1/2019,1599.63,Winthrop,River East,118,352.75
+1/2019,1740.05,Kirkland,River East,56.5,303.25
+1/2019,1750.81,Leverett,River West,36.75,297.5
+1/2019,1877.21,Eliot,River East,50.25,337.5
+1/2019,2180.38,Dunster,River West,82.75,497
+1/2019,2264.54,Mather,River West,22.75,221
+1/2019,3173.44,Cabot,Quad,19.25,191.25
+1/2019,3457.24,Pforzheimer,Quad,15,206.5
+1/2019,3486.88,Currier,Quad,52,251
+10/2017,641.54,FlyBy,Yard,442,445
+10/2017,1024.32,Adams,River Central,69.5,405.5
+10/2017,1062.31,Lowell,River Central,58.5,292.5
+10/2017,1436.1,Quincy,River Central,104,436
+10/2017,1599.63,Winthrop,River East,88,310.5
+10/2017,1740.05,Kirkland,River East,48,290
+10/2017,1750.81,Leverett,River West,48.5,309
+10/2017,1877.21,Eliot,River East,39.5,308
+10/2017,2180.38,Dunster,River West,77,266
+10/2017,2264.54,Mather,River West,24.5,215.5
+10/2017,3173.44,Cabot,Quad,28.5,200.5
+10/2017,3457.24,Pforzheimer,Quad,15,203.5
+10/2017,3486.88,Currier,Quad,60.5,269.5
+10/2018,641.54,FlyBy,Yard,495,498
+10/2018,1024.32,Adams,River Central,95,388
+10/2018,1062.31,Lowell,River Central,143.5,419.5
+10/2018,1436.1,Quincy,River Central,90,421
+10/2018,1599.63,Winthrop,River East,104,321
+10/2018,1740.05,Kirkland,River East,46,289
+10/2018,1750.81,Leverett,River West,42.5,284
+10/2018,1877.21,Eliot,River East,43.5,304
+10/2018,2180.38,Dunster,River West,84.5,308
+10/2018,2264.54,Mather,River West,21.5,198
+10/2018,3173.44,Cabot,Quad,14.5,189.5
+10/2018,3457.24,Pforzheimer,Quad,13.5,200
+10/2018,3486.88,Currier,Quad,64,271.5
+11/2017,641.54,FlyBy,Yard,402,404
+11/2017,1024.32,Adams,River Central,86,401
+11/2017,1062.31,Lowell,River Central,66.5,293
+11/2017,1436.1,Quincy,River Central,102,420
+11/2017,1599.63,Winthrop,River East,82,292.75
+11/2017,1740.05,Kirkland,River East,35.5,259
+11/2017,1750.81,Leverett,River West,45,300.25
+11/2017,1877.21,Eliot,River East,37.5,291.25
+11/2017,2180.38,Dunster,River West,55,244.5
+11/2017,2264.54,Mather,River West,22.25,214.75
+11/2017,3173.44,Cabot,Quad,25.25,184.5
+11/2017,3457.24,Pforzheimer,Quad,12.75,186.5
+11/2017,3486.88,Currier,Quad,52.5,235.5
+11/2018,641.54,FlyBy,Yard,456,458
+11/2018,1024.32,Adams,River Central,81.25,385.5
+11/2018,1062.31,Lowell,River Central,135.75,336.25
+11/2018,1436.1,Quincy,River Central,83.25,368.5
+11/2018,1599.63,Winthrop,River East,89.25,307.5
+11/2018,1740.05,Kirkland,River East,40.5,274.5
+11/2018,1750.81,Leverett,River West,35.25,270
+11/2018,1877.21,Eliot,River East,41.25,286.5
+11/2018,2180.38,Dunster,River West,59.25,271.5
+11/2018,2264.54,Mather,River West,19.75,205.5
+11/2018,3173.44,Cabot,Quad,16.25,173.25
+11/2018,3457.24,Pforzheimer,Quad,14,190.5
+11/2018,3486.88,Currier,Quad,61.5,250.25
+12/2017,641.54,FlyBy,Yard,158,160
+12/2017,1024.32,Adams,River Central,71.5,380
+12/2017,1062.31,Lowell,River Central,42,242
+12/2017,1436.1,Quincy,River Central,104,390.5
+12/2017,1599.63,Winthrop,River East,58,251
+12/2017,1740.05,Kirkland,River East,34.5,243.5
+12/2017,1750.81,Leverett,River West,49.5,307
+12/2017,1877.21,Eliot,River East,59,318.5
+12/2017,2180.38,Dunster,River West,45,229.5
+12/2017,2264.54,Mather,River West,14,227
+12/2017,3173.44,Cabot,Quad,20,297.5
+12/2017,3457.24,Pforzheimer,Quad,8.5,165.5
+12/2017,3486.88,Currier,Quad,59,267.5
+12/2018,641.54,FlyBy,Yard,425,429
+12/2018,1024.32,Adams,River Central,105,408.5
+12/2018,1062.31,Lowell,River Central,161.5,412
+12/2018,1436.1,Quincy,River Central,75.5,405.5
+12/2018,1599.63,Winthrop,River East,102.5,350.5
+12/2018,1740.05,Kirkland,River East,44.5,275
+12/2018,1750.81,Leverett,River West,44,284.5
+12/2018,1877.21,Eliot,River East,39,300
+12/2018,2180.38,Dunster,River West,39.5,252
+12/2018,2264.54,Mather,River West,28,230.5
+12/2018,3173.44,Cabot,Quad,18.5,188.5
+12/2018,3457.24,Pforzheimer,Quad,14.5,202.5
+12/2018,3486.88,Currier,Quad,52,274
+2/2018,641.54,FlyBy,Yard,374,377
+2/2018,1024.32,Adams,River Central,79.75,364.75
+2/2018,1062.31,Lowell,River Central,80.25,329.25
+2/2018,1436.1,Quincy,River Central,111.75,443
+2/2018,1599.63,Winthrop,River East,73.75,310.75
+2/2018,1740.05,Kirkland,River East,46,270.75
+2/2018,1750.81,Leverett,River West,48.75,302.25
+2/2018,1877.21,Eliot,River East,44.75,306.5
+2/2018,2180.38,Dunster,River West,50,242.5
+2/2018,2264.54,Mather,River West,22.75,219.5
+2/2018,3173.44,Cabot,Quad,25.75,195
+2/2018,3457.24,Pforzheimer,Quad,14.25,211.5
+2/2018,3486.88,Currier,Quad,50.25,260.25
+2/2019,641.54,FlyBy,Yard,490,494
+2/2019,1024.32,Adams,River Central,94.25,398.25
+2/2019,1062.31,Lowell,River Central,119.25,365.25
+2/2019,1436.1,Quincy,River Central,86,402
+2/2019,1599.63,Winthrop,River East,97.25,330
+2/2019,1740.05,Kirkland,River East,51.25,287.75
+2/2019,1750.81,Leverett,River West,38.75,276.5
+2/2019,1877.21,Eliot,River East,47.75,309.5
+2/2019,2180.38,Dunster,River West,51,268
+2/2019,2264.54,Mather,River West,21.75,204.5
+2/2019,3173.44,Cabot,Quad,20.25,188.75
+2/2019,3457.24,Pforzheimer,Quad,11.75,187.25
+2/2019,3486.88,Currier,Quad,61.75,266.75
+3/2018,641.54,FlyBy,Yard,337.5,339
+3/2018,1024.32,Adams,River Central,87,371.25
+3/2018,1062.31,Lowell,River Central,101.5,317.25
+3/2018,1436.1,Quincy,River Central,96.5,427.75
+3/2018,1599.63,Winthrop,River East,74.5,302
+3/2018,1740.05,Kirkland,River East,49,267.5
+3/2018,1750.81,Leverett,River West,48,291
+3/2018,1877.21,Eliot,River East,42,294
+3/2018,2180.38,Dunster,River West,47.5,228
+3/2018,2264.54,Mather,River West,23.5,206.5
+3/2018,3173.44,Cabot,Quad,23,179.5
+3/2018,3457.24,Pforzheimer,Quad,11.5,189
+3/2018,3486.88,Currier,Quad,58.5,263
+3/2019,641.54,FlyBy,Yard,455,460
+3/2019,1024.32,Adams,River Central,80.5,359.5
+3/2019,1062.31,Lowell,River Central,123.5,330.75
+3/2019,1436.1,Quincy,River Central,91,393.5
+3/2019,1599.63,Winthrop,River East,66.5,287.5
+3/2019,1740.05,Kirkland,River East,49,277.5
+3/2019,1750.81,Leverett,River West,36.5,274.25
+3/2019,1877.21,Eliot,River East,47.5,293
+3/2019,2180.38,Dunster,River West,55,269.25
+3/2019,2264.54,Mather,River West,26,204.75
+3/2019,3173.44,Cabot,Quad,20,188
+3/2019,3457.24,Pforzheimer,Quad,13,190
+3/2019,3486.88,Currier,Quad,69,253
+4/2018,641.54,FlyBy,Yard,306,307
+4/2018,1024.32,Adams,River Central,116.5,399.5
+4/2018,1062.31,Lowell,River Central,144,360.5
+4/2018,1436.1,Quincy,River Central,117,437.5
+4/2018,1599.63,Winthrop,River East,84.5,319.5
+4/2018,1740.05,Kirkland,River East,50.5,276
+4/2018,1750.81,Leverett,River West,54,291
+4/2018,1877.21,Eliot,River East,46.5,310.5
+4/2018,2180.38,Dunster,River West,54,247
+4/2018,2264.54,Mather,River West,25.25,216
+4/2018,3173.44,Cabot,Quad,26.5,210
+4/2018,3457.24,Pforzheimer,Quad,15.5,207.5
+4/2018,3486.88,Currier,Quad,55.5,269
+4/2019,641.54,FlyBy,Yard,445.5,448.5
+4/2019,1024.32,Adams,River Central,106.5,403.75
+4/2019,1062.31,Lowell,River Central,158.75,418
+4/2019,1436.1,Quincy,River Central,95.25,391.25
+4/2019,1599.63,Winthrop,River East,75,299
+4/2019,1740.05,Kirkland,River East,52.75,293.5
+4/2019,1750.81,Leverett,River West,43.5,278.75
+4/2019,1877.21,Eliot,River East,51,309.75
+4/2019,2180.38,Dunster,River West,76.25,306.25
+4/2019,2264.54,Mather,River West,15.25,202
+4/2019,3173.44,Cabot,Quad,21,201
+4/2019,3457.24,Pforzheimer,Quad,10.75,186.75
+4/2019,3486.88,Currier,Quad,59.75,256
+5/2019,641.54,FlyBy,Yard,320,326
+5/2019,1024.32,Adams,River Central,78,612.5
+5/2019,1062.31,Lowell,River Central,116,579
+5/2019,1436.1,Quincy,River Central,81,298
+5/2019,1599.63,Winthrop,River East,126,352.5
+5/2019,1740.05,Kirkland,River East,67.5,313
+5/2019,1750.81,Leverett,River West,84.5,464.5
+5/2019,1877.21,Eliot,River East,21.5,358
+5/2019,2180.38,Dunster,River West,70.5,296.5
+5/2019,2264.54,Mather,River West,30.5,200
+5/2019,3173.44,Cabot,Quad,15,196
+5/2019,3457.24,Pforzheimer,Quad,17,405.5
+5/2019,3486.88,Currier,Quad,53.5,254
+8/2017,1024.32,Adams,River Central,110,425
+8/2017,1062.31,Lowell,River Central,53,293.75
+8/2017,1436.1,Quincy,River Central,117.25,537.5
+8/2017,1599.63,Winthrop,River East,119.5,396.75
+8/2017,1740.05,Kirkland,River East,48.75,337.25
+8/2017,1750.81,Leverett,River West,64,384.75
+8/2017,1877.21,Eliot,River East,39.5,329.5
+8/2017,2180.38,Dunster,River West,68.5,362.25
+8/2017,2264.54,Mather,River West,17,288.75
+8/2017,3173.44,Cabot,Quad,30.5,226.25
+8/2017,3457.24,Pforzheimer,Quad,14,217
+8/2017,3486.88,Currier,Quad,48.25,248.5
+9/2017,641.54,FlyBy,Yard,459,461
+9/2017,1024.32,Adams,River Central,82.25,376
+9/2017,1062.31,Lowell,River Central,48.75,280.25
+9/2017,1436.1,Quincy,River Central,102.75,448.75
+9/2017,1599.63,Winthrop,River East,90.75,310.25
+9/2017,1740.05,Kirkland,River East,49,291.25
+9/2017,1750.81,Leverett,River West,55.75,322
+9/2017,1877.21,Eliot,River East,40.75,309.5
+9/2017,2180.38,Dunster,River West,78.75,278.25
+9/2017,2264.54,Mather,River West,26.5,231
+9/2017,3173.44,Cabot,Quad,28.25,201.75
+9/2017,3457.24,Pforzheimer,Quad,15.75,205
+9/2017,3486.88,Currier,Quad,65,276.25
+9/2018,641.54,FlyBy,Yard,515,516
+9/2018,1024.32,Adams,River Central,96.5,415
+9/2018,1062.31,Lowell,River Central,106,381
+9/2018,1436.1,Quincy,River Central,95.5,442.5
+9/2018,1599.63,Winthrop,River East,107,351
+9/2018,1740.05,Kirkland,River East,54.5,285
+9/2018,1750.81,Leverett,River West,40.5,293.5
+9/2018,1877.21,Eliot,River East,44,308
+9/2018,2180.38,Dunster,River West,95,301.5
+9/2018,2264.54,Mather,River West,24.5,212.5
+9/2018,3173.44,Cabot,Quad,17,192.5
+9/2018,3457.24,Pforzheimer,Quad,15,203.5
+9/2018,3486.88,Currier,Quad,64.5,275
