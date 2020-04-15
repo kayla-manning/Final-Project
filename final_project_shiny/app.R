@@ -31,11 +31,7 @@ my_table <- function(x) {
     ungroup() %>% 
     mutate(avg_int = round(avg_int),
            avg_total = round(avg_total),
-           distance = paste(round(distance), "feet from John Harvard Statue"),
-           month_year = month_year %>% 
-             as_factor() %>% 
-             fct_relevel("8/2017", "9/2017", "9/2018", "10/2017", 
-                         "10/2018", "11/2017", "11/2018", "12/2017", "12/2018")) %>% 
+           distance = paste(round(distance), "feet from John Harvard Statue")) %>% 
     group_by(house, distance) %>% 
     gt() %>% 
     cols_label(distance = "Distance from John Harvard", 

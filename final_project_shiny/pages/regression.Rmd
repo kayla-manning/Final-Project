@@ -1,0 +1,125 @@
+---
+title: "Regression"
+author: "Kayla Manning"
+date: "4/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+# calling libraries I need as I go
+
+library(tidyverse)
+library(broom)
+library(gt)
+
+# loading data
+
+tidy_int_reg_bag <- read_csv("all_tidy.csv",
+                             col_types = cols(col_date(format = ''),
+                                             col_character(),
+                                             col_character(),
+                                             col_character(),
+                                             col_character(),
+                                             col_character(),
+                                             col_double()))
+anim_data <- read_csv("anim_data.csv")
+
+```
+
+```{r plot_int_distance}
+
+# first I will run a simple regression with just distance and the average
+# monthly interhouse swipes for each house. for both plots, the raw data appears
+# to follow the same general shape, just with more interhouse swipes in the
+# 2018-2019 academic year compared to the previous.
+
+anim_data %>% 
+  group_by(house, year, distance) %>% 
+  summarise(avg_int = mean(avg_int)) %>% 
+  ungroup() %>% 
+  mutate(year = as_factor(year)) %>% 
+  ggplot(aes(distance, avg_int, color = year)) +
+  geom_point() +
+  geom_jitter() +
+  facet_wrap(~ year) +
+  labs(title = "Average Interhouse Swipes Per Meal by Distance",
+       subtitle = "Distance is measured in feet from the John Harvard Statue",
+       caption = "Note that all FlyBy swipes are interhouse") +
+  xlab("Distance (ft) from the John Harvard Statue") +
+  ylab("Average Interhouse Swipes Per Dining Location")
+
+```
+
+```{r fix_plot}
+
+# I will remove FlyBy from the data since all swipes are considered interhouse
+# swipes; now that I have a look at the data, I will try to run a regression in
+# the next chunk. It appears that a cubic function might be the best fit, but I
+# will try other models and compare R^2 values.
+
+anim_data %>% 
+  filter(house != "FlyBy") %>% 
+  group_by(house, year, distance) %>% 
+  summarise(avg_int = mean(avg_int)) %>% 
+  ungroup() %>% 
+  mutate(year = as_factor(year)) %>% 
+  ggplot(aes(distance, avg_int, color = year)) +
+  geom_point() +
+  geom_jitter() +
+  facet_wrap(~ year) +
+  labs(title = "Average Interhouse Swipes Per Meal by Distance",
+       subtitle = "Distance is measured in feet from the John Harvard Statue",
+       caption = "Only looking at upperclassman houses") +
+  xlab("Distance (ft) from the John Harvard Statue") +
+  ylab("Average Interhouse Swipes Per Dining Location") +
+  geom_smooth(method = "loess", formula = y ~ x)
+
+```
+
+
+```{r}
+
+# I am removing FlyBy from the data because it will throw off the regression
+# estimates.
+
+new_anim_data  <- anim_data %>% 
+  filter(house != "FlyBy") %>% 
+  mutate(month_year = as_factor(month_year))
+
+
+# testing the strength of our model with just distance; only 0.4422738 of
+# variation is accounted for... let's see if we can do better
+
+simple_r2 <- new_anim_data %>% 
+  lm(avg_int ~ distance, data = .) %>% 
+  glance() %>% 
+  pull(adj.r.squared)
+
+# after testing out many multiple regressions, this is the best adj.r.squared
+# that I could get. 0.7934766 of variation is accounted for with this model.
+# pretty good!
+
+mult <- new_anim_data %>% 
+  lm(avg_int ~ house + distance + year + month_year, data = .)
+
+mult_r2 <- mult %>% 
+  glance() %>% 
+  pull(adj.r.squared)
+
+# now I will format a regression table to print out and interpret
+
+new_anim_data %>% 
+  lm(avg_int ~ distance + house + month_year + year, data = .) %>% 
+  tidy() %>% 
+  select(term, estimate) %>% 
+  gt() %>% 
+  tab_header(title = "Multiple Regression on Interhouse Swipes",
+             subtitle = "The Intercept (baseline) measurement is Adams House in January 2018") %>% 
+  cols_label(term = "Explanatory Variable",
+             estimate = "Estimated Coefficient")
+
+
+```
+

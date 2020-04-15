@@ -62,9 +62,16 @@ anim_data <- tidy_int_reg_bag %>%
   
   arrange(date) %>% 
   mutate(month_year = paste(month(date), year(date), sep = "/")) %>% 
-  group_by(month_year, distance, house, neighborhood) %>% 
+  group_by(month_year, distance, house, neighborhood, year) %>% 
   summarize(avg_int = median(int, na.rm = TRUE),
             avg_total = median(grand_total, na.rm = TRUE))
+
+anim_data$month_year <- fct_relevel(anim_data$month_year, "8/2017", 
+                                        "9/2017", "10/2017", "11/2017",
+                                        "12/2017", "1/2018", "2/2018", "3/2018",
+                                        "4/2018", "9/2018", "10/2018", "11/2018",
+                                        "12/2018", "1/2019", "2/2019", "3/2019",
+                                        "4/2019", "5/2019")
 
 # saving this data as a csv file so I can easily call for it in my shiny app
 
@@ -108,11 +115,6 @@ anim_data %>%
              avg_total = "Total Swipes per Meal") %>% 
   tab_header(title = "Monthly Average Interhouse and Total Swipes per Meal")
 
-test_model <- lm(avg_int ~ distance, data = anim_data)
-summary(test_model)
 
-testgrid <- seq(min(anim_data$distance), max(anim_data$distance), 1)
-
-plot(testgrid, predict(test_model, newdata = list(distance = testgrid)))
 ```
 
