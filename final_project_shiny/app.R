@@ -22,9 +22,9 @@ tidy_int_reg_bag <- read_csv("pages/all_tidy.csv",
                                               col_double()))
 anim_data <- read_csv("pages/anim_data.csv")
 
-# this is the data I will use for my gt table
+# this is the data I will use for my gt table that accompanies my animation
 
-my_table <- function(x) {
+anim_table <- function(x) {
   anim_data %>% 
   filter(house == x) %>% 
   select(month_year, house, avg_int, avg_total, distance) %>% 
@@ -42,8 +42,36 @@ my_table <- function(x) {
 }
 
 
+
 ui <- navbarPage(
   "HUDS Traffic Patterns in 2017-2018 and 2018-2019 Academic Years",
+  tabPanel("About", 
+           includeHTML(file.path("pages/about.html"))),
+  tabPanel("Simulated Distributions of Interhouse Swipes",
+           includeHTML(file.path("pages/boot_int_pct.html"))),
+  tabPanel("Change in Monthly Average Swipes per Meal",
+           fluidPage(theme = shinytheme("simplex"),
+                     titlePanel("Change in Average Monthly Swipes per Meal"),
+                     sidebarLayout(
+                       sidebarPanel(
+                         verticalLayout(
+                           selectInput(
+                             "house",
+                             "House",
+                             c(tidy_int_reg_bag %>% 
+                                 filter(house != "Annenberg",
+                                        house != "Hillel") %>% 
+                                 pull(house))
+                           ),
+                           p("For a closer look at the monthly median swipe counts
+                             per meal by house, select the house of interest from 
+                             the drop-down bar."))),
+                       mainPanel(
+                         splitLayout(
+                           imageOutput("my_plot", width = "700px", height = "600px"),
+                           gt_output("table")
+                         )))
+                         )),
   tabPanel("Change in Percentage of Interhouse Swipes by Meal",
            fluidPage(theme = shinytheme("simplex"),
              titlePanel("Change in Percentage of Interhouse Swipes by Meal"),
@@ -141,35 +169,11 @@ ui <- navbarPage(
                          imageOutput("house_lunch")
                        ))
                          )),
-  tabPanel("Change in Monthly Average Swipes per Meal",
-           fluidPage(theme = shinytheme("simplex"),
-                     titlePanel("Change in Average Monthly Swipes per Meal"),
-                     sidebarLayout(
-                       sidebarPanel(
-                         verticalLayout(
-                           selectInput(
-                             "house",
-                             "House",
-                             c(tidy_int_reg_bag %>% 
-                                 filter(house != "Annenberg",
-                                        house != "Hillel") %>% 
-                                 pull(house))
-                           ),
-                           p("For a closer look at the monthly median swipe counts
-                             per meal by house, select the house of interest from 
-                             the drop-down bar."))),
-                       mainPanel(
-                         splitLayout(
-                          imageOutput("my_plot", width = "700px", height = "600px"),
-                          gt_output("table")
-                       )))
-                         )),
-  tabPanel("Simulated Distributions of Interhouse Swipes",
-           includeHTML(file.path("pages/boot_int_pct.html"))),
+  tabPanel("Relationship Between Interhouse Swipes and Month, Year, and House",
+           includeHTML(file.path("pages/regression.html"))),
   tabPanel("Discussion",
-           includeHTML(file.path("pages/discussion.html"))),
-  tabPanel("About", 
-           includeHTML(file.path("pages/about.html"))))
+           includeHTML(file.path("pages/discussion.html")))
+)
 
 # for now I'm just copying and pasting the server example from the textbook
 # as well, but this will likely have to change a lot more than the ui template
@@ -246,10 +250,10 @@ server <- function(input, output, session) {
     deleteFile = FALSE)
   
   output$table <-  render_gt(
-      expr = my_table(input$house),
-      width = 500,
-      height = 600
-    )
+    expr = anim_table(input$house),
+    width = 500,
+    height = 600
+  )
   
   }
 

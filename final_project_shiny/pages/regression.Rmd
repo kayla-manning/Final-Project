@@ -1,9 +1,8 @@
 ---
-title: "Regression"
-author: "Kayla Manning"
-date: "4/15/2020"
 output: html_document
 ---
+
+## Linear Regression on Interhouse Swipes and Month, Year, and House
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
@@ -27,6 +26,8 @@ tidy_int_reg_bag <- read_csv("all_tidy.csv",
 anim_data <- read_csv("anim_data.csv")
 
 ```
+
+Curious about the relationship between distance from Harvard Yard and interhouse swipe counts, I plotted the median number of interhouse swipes for each house in each academic year as a function of the distance from the John Harvard Statue. I chose John Harvard as a central location on campus because it sits relatively equidistant from Sever and the Science Center, two of the most popular classroom buildings on campus. I hypothesized that a greater distance would be associated with fewer interhouse swipes, and the below plot confirms that notion.
 
 ```{r plot_int_distance}
 
@@ -52,6 +53,12 @@ anim_data %>%
 
 ```
 
+You can see that between the two academic years, the houses closest to the John Harvard Statue experienced a surge in the number of interhouse swipes relative to the previous academic year. This is likely as a result of increased time pressure due to the schedule change. 
+
+Another point worth noting is that FlyBy is a huge outlier on this plot. Because FlyBy is not a house, all student swipes are counted as interhouse. For that reason, I will exclude FlyBy from my regression.
+
+We see that distance and year appear to have an association with average number of interhouse swipes. I will run a regression to estimate the average treatment effect of each house and month on the average number of interhouse swipes.
+
 ```{r fix_plot}
 
 # I will remove FlyBy from the data since all swipes are considered interhouse
@@ -74,10 +81,17 @@ anim_data %>%
        caption = "Only looking at upperclassman houses") +
   xlab("Distance (ft) from the John Harvard Statue") +
   ylab("Average Interhouse Swipes Per Dining Location") +
-  geom_smooth(method = "loess", formula = y ~ x)
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ x)
 
 ```
 
+I began my investigation to best explain the variables behind interhouse swipe counts by building multiple linear models and assessing the efficacy of each. For example, the above plot is of a linear regression of average interhouse swipes on distance; this model only accounts for about 44% of the variation in the data. I found that a model that includes house, distance from John Harvard, and the month and academic year best explained the variation in interhouse swipe counts. The regression output below explains just over 79% of variation present in the data.
+
+Below I have printed out a regression table with the estimated coefficients for each variable. While it may look overwhelming, it is best to look at individual coefficients relative to the intercept. Our intercept value represents the average number of interhouse swipes per meal in Adams House during January 2018. The values in the "Estimated Coefficient" column represent the average difference in swipes for that given variable.
+
+For example, our "houseCabot" term reveals that Cabot experienced an average of 66 less interhouse swipes per meal in January 2018 compared to Adams in that same month. To calculate that exact value, we would take our intercept of 97 and subtract 66 to reveal that Cabot saw an average of 31 interhouse swipes per meal in January 2018.
+
+Simply put, you can calculate the average number of interhouse swipes for any particular month or house by adding the coefficient corresponding to your variable(s) of interest to the intercept coefficient!
 
 ```{r}
 
@@ -108,11 +122,14 @@ mult_r2 <- mult %>%
   glance() %>% 
   pull(adj.r.squared)
 
-# now I will format a regression table to print out and interpret
+# now I will format a regression table to print out and interpret. I am removing
+# the decimal places since we are counting whole people and we can't have .39
+# people.
 
 new_anim_data %>% 
   lm(avg_int ~ distance + house + month_year + year, data = .) %>% 
   tidy() %>% 
+  mutate(estimate = round(estimate, 0)) %>% 
   select(term, estimate) %>% 
   gt() %>% 
   tab_header(title = "Multiple Regression on Interhouse Swipes",
