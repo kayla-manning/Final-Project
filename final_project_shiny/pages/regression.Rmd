@@ -2,7 +2,7 @@
 output: html_document
 ---
 
-## Linear Regression on Interhouse Swipes and Month, Year, and House
+## Linear Regression of Interhouse Swipes with Month, Year, and House
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)

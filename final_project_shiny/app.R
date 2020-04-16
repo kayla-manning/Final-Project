@@ -47,9 +47,13 @@ ui <- navbarPage(
   "HUDS Traffic Patterns in 2017-2018 and 2018-2019 Academic Years",
   tabPanel("About", 
            includeHTML(file.path("pages/about.html"))),
-  tabPanel("Simulated Distributions of Interhouse Swipes",
+  navbarMenu("Simulations and Regression",
+      tabPanel("Simulated Distributions of Interhouse Swipes",
            includeHTML(file.path("pages/boot_int_pct.html"))),
-  tabPanel("Change in Monthly Average Swipes per Meal",
+      tabPanel("Linear Regression of Interhouse Swipes with Month, Year, and House",
+           includeHTML(file.path("pages/regression.html")))),
+  navbarMenu("Visualizations",
+      tabPanel("Change in Monthly Average Swipes per Meal",
            fluidPage(theme = shinytheme("simplex"),
                      titlePanel("Change in Average Monthly Swipes per Meal"),
                      sidebarLayout(
@@ -72,7 +76,7 @@ ui <- navbarPage(
                            gt_output("table")
                          )))
                          )),
-  tabPanel("Change in Percentage of Interhouse Swipes by Meal",
+      tabPanel("Change in Percentage of Interhouse Swipes by Meal",
            fluidPage(theme = shinytheme("simplex"),
              titlePanel("Change in Percentage of Interhouse Swipes by Meal"),
              sidebarLayout(
@@ -97,7 +101,7 @@ ui <- navbarPage(
                    imageOutput("pct_interhouse"),
             ))
            )),
-  tabPanel("Change in Interhouse Swipes by Meal",
+      tabPanel("Change in Interhouse Swipes by Meal",
            fluidPage(theme = shinytheme("simplex"),
                      titlePanel("Change in Interhouse Swipes by Meal"),
                      sidebarLayout(
@@ -116,7 +120,7 @@ ui <- navbarPage(
                          imageOutput("interhouse")
                        ))
                          )),
-  tabPanel("Daily Distributions of Fly-By Traffic",
+      tabPanel("Daily Distributions of Fly-By Traffic",
            fluidPage(theme = shinytheme("simplex"),
                      titlePanel("Daily Distributions of Fly-By Traffic"),
                      sidebarLayout(
@@ -140,7 +144,7 @@ ui <- navbarPage(
                          imageOutput("daily_fly")
             ))
            )),
-  tabPanel("Comparing Interhouse and Resident Lunch Swipes",
+      tabPanel("Comparing Interhouse and Resident Lunch Swipes",
            fluidPage(theme = shinytheme("simplex"),
                      titlePanel("Comparing Interhouse and Resident Lunch Swipes"),
                      sidebarLayout(
@@ -168,10 +172,8 @@ ui <- navbarPage(
                        mainPanel(
                          imageOutput("house_lunch")
                        ))
-                         )),
-  tabPanel("Relationship Between Interhouse Swipes and Month, Year, and House",
-           includeHTML(file.path("pages/regression.html"))),
-  tabPanel("Discussion",
+                         ))),
+    tabPanel("Discussion",
            includeHTML(file.path("pages/discussion.html")))
 )
 
