@@ -13,14 +13,15 @@ library(xml2)
 
 ### Project Data, Background, and Motivations
 
-My data contains total swipe counts for every Harvard College HUDS location, including FlyBy and Hillel. The swipes are broken down by category, including but not limited to "interhouse", "regular", "bagged", "employee", etc. Using the raw dates, I added columns that contain the day of the week and the academic year. The counts span the entirety of the 2017-2018 and 2018-2019 academic years.
-
 From analyzing student traffic patterns in the various locations, I hope to better understand the impact of the schedule change on student dining. The new course schedule debuted following the 2017-2018 academic year, so I have the data for the academic years immediately before and after this adjustment. My analysis will help HUDS understand changes in the past as it braces itself for more changes to come with the new Allston campus. A significant change in meal patterns with the past schedule change may indicate the potential for future shifts in the 2020-2021 academic year with the opening of the Allston campus and its FlyBy location.
 
-My GitHub repository can be found [here](https://github.com/kayla-manning/final-project). The "raw-data" folder contains all the the Excel spreadsheets I was initially given, as well as a .csv I created called "all_tidy", which combines all of the data in a tidied format. I started off with 60 different spreadsheets--one for each semester at each dining location. For a look at the finished product after nearly 1,000 lines of cleaning, tidying, and joining the data, take a look at "raw-data/all_tidy.csv" in my repository! 
+I started off with 60 different spreadsheets--one for each semester at each dining location. My data contains total swipe counts for every Harvard College HUDS location, including FlyBy and Hillel. The swipes are broken down by category, including but not limited to "interhouse", "regular", "bagged", "employee", etc. Using the raw dates, I added columns that contain the day of the week and the academic year. The counts span the entirety of the 2017-2018 and 2018-2019 academic years.
+
+My GitHub repository can be found [here](https://github.com/kayla-manning/final-project). The "raw-data" folder contains the initial Excel spreadsheets and a .csv entitled "all_tidy", where I combined all of the data in a tidied format. For a look at the finished product after nearly 1,000 lines of cleaning, tidying, and joining the data, take a look at "raw-data/all_tidy.csv" in my repository! 
+
 
 ### About Me
 
-My name is Kayla Manning, and I am a sophomore concentrating in Statistics with a secondary in Global Health and Health Policy. For any questions pertaining to this project, you can reach me at [kaylamanning@college.harvard.edu]().
+My name is Kayla Manning, and I am a sophomore concentrating in Statistics with a secondary in Global Health and Health Policy. You can reach me at [kaylamanning@college.harvard.edu]() for any questions pertaining to this project.
 
 

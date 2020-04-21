@@ -112,7 +112,7 @@ ui <- navbarPage(
                              "Meal",
                              c("Breakfast" = "bfast", "Lunch" = "lunch", "Dinner" = "dinner")
                            ),
-                           p("Unlike the plots in the previous window, this plot just
+                           p("Unlike the visualization in the previous window, this plot simply
                              subtracts the median interhouse swipe counts in the 2017-2018
                              academic year from the median interhouse swipe counts in the
                              2018-2019 academic year."))),
@@ -163,11 +163,11 @@ ui <- navbarPage(
                              year. You can filter for interhouse, residents,
                              or both categories if you would like to take
                              a closer look. You can see that the interhouse
-                             and resident swipes decreased in River Central
-                             Houses such as Quincy and Adams while they 
+                             and resident swipes decreased in the River Central
+                             houses of Quincy and Adams while they 
                              increased in Lowell. This makes sense if many
                              students were opting out of eating in Adams and
-                             Quincy in favor of dining in the Lowtell swing
+                             Quincy in favor of dining in the Lowtel swing
                              housing dining hall."))),
                        mainPanel(
                          imageOutput("house_lunch")

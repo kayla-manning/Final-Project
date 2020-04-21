@@ -53,11 +53,11 @@ anim_data %>%
 
 ```
 
-You can see that between the two academic years, the houses closest to the John Harvard Statue experienced a surge in the number of interhouse swipes relative to the previous academic year. This is likely as a result of increased time pressure due to the schedule change. 
+You can see that between the two academic years, the houses closest to the John Harvard Statue experienced a surge in the number of interhouse swipes relative to the previous academic year. This likely occurred as a result of increased time pressure due to the schedule change. 
 
 Another point worth noting is that FlyBy is a huge outlier on this plot. Because FlyBy is not a house, all student swipes are counted as interhouse. For that reason, I will exclude FlyBy from my regression.
 
-We see that distance and year appear to have an association with average number of interhouse swipes. I will run a regression to estimate the average treatment effect of each house and month on the average number of interhouse swipes.
+We see that distance and year appear to have an association with average number of interhouse swipes. I will run a regression to estimate the average treatment effect of house and month on the average number of interhouse swipes.
 
 ```{r fix_plot}
 
@@ -85,15 +85,14 @@ anim_data %>%
 
 ```
 
-I began my investigation to best explain the variables behind interhouse swipe counts by building multiple linear models and assessing the efficacy of each. For example, the above plot is of a linear regression of average interhouse swipes on distance; this model only accounts for about 44% of the variation in the data. I found that a model that includes house, distance from John Harvard, and the month and academic year best explained the variation in interhouse swipe counts. The regression output below explains just over 79% of variation present in the data.
+I began my investigation to best explain the variables behind interhouse swipe counts by building multiple linear models and assessing the efficacy of each. For example, the above plot is of a linear regression of average interhouse swipes on distance; this model only accounts for about 44% of the variation in the data. I found that a model looking at each house and controlling for the month and academic year best explains the variation in interhouse swipe counts. My linear model explains just over 79% of variation present in the data. Considering that this data does not provide any variables to quantify measure social connectivity between houses, such as students dining with friends in other houses, 79% explanation captures our data very well.
 
-Below I have printed out a regression table with the estimated coefficients for each variable. While it may look overwhelming, it is best to look at individual coefficients relative to the intercept. Our intercept value represents the average number of interhouse swipes per meal in Adams House during January 2018. The values in the "Estimated Coefficient" column represent the average difference in swipes for that given variable.
+The below graph displays the estimated interhouse swipe counts per meal at each house, controlling for month and academic year. Each point represents the average count of interhouse swipes at each meal for that respective house, while the error bars represent the lower and upper bounds of our 95% confidence intervals. We are 95% confident that the true average number of interhouse swipes for each month is captured within our error bars.
 
-For example, our "houseCabot" term reveals that Cabot experienced an average of 66 less interhouse swipes per meal in January 2018 compared to Adams in that same month. To calculate that exact value, we would take our intercept of 97 and subtract 66 to reveal that Cabot saw an average of 31 interhouse swipes per meal in January 2018.
+When the error bars between houses do not overlap along the x-axis, that means that the difference in the average number of interhouse swipe counts per meal is statistically significant. That is, we are 95% confident that the true number of interhouse swipe counts per meal is different between the houses when controlling for month. For example, Lowell, Quincy, Adams, and Winthrop do not overlap with any of the remaining 8 houses. They have a significantly greater number of interhouse swipes per meal compared to the other houses when controlling for month.
 
-Simply put, you can calculate the average number of interhouse swipes for any particular month or house by adding the coefficient corresponding to your variable(s) of interest to the intercept coefficient!
 
-```{r}
+```{r model}
 
 # I am removing FlyBy from the data because it will throw off the regression
 # estimates.
@@ -116,26 +115,77 @@ simple_r2 <- new_anim_data %>%
 # pretty good!
 
 mult <- new_anim_data %>% 
-  lm(avg_int ~ house + distance + year + month_year, data = .)
+  lm(avg_int ~ house + month_year, data = .)
 
 mult_r2 <- mult %>% 
   glance() %>% 
   pull(adj.r.squared)
 
-# now I will format a regression table to print out and interpret. I am removing
-# the decimal places since we are counting whole people and we can't have .39
-# people.
+```
 
-new_anim_data %>% 
-  lm(avg_int ~ distance + house + month_year + year, data = .) %>% 
-  tidy() %>% 
-  mutate(estimate = round(estimate, 0)) %>% 
-  select(term, estimate) %>% 
-  gt() %>% 
-  tab_header(title = "Multiple Regression on Interhouse Swipes",
-             subtitle = "The Intercept (baseline) measurement is Adams House in January 2018") %>% 
-  cols_label(term = "Explanatory Variable",
-             estimate = "Estimated Coefficient")
+```{r reg_house_graph}
+
+# taking info from gt table and putting it into a graph
+
+mult %>% 
+  tidy(conf.int = TRUE) %>% 
+  slice(1:12) %>% 
+  mutate(estimate = ifelse(term != "(Intercept)", 
+                           estimate + 97.07523148, estimate),
+         conf.low = ifelse(term != "(Intercept)",
+                           conf.low + 97.07523148, conf.low),
+         conf.high = ifelse(term != "(Intercept)",
+                            conf.high + 97.07523148, conf.high),
+         term = ifelse(term == "(Intercept)", "Adams",
+                       str_remove(term, "house")),
+         term = term %>% 
+                 as_factor() %>% 
+                 fct_reorder(estimate)) %>% 
+  ggplot(aes(term, estimate, color = term)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) +
+  coord_flip() +
+  xlab("House") +
+  ylab("Estimated Interhouse Swipes Per Meal") +
+  labs(title = "Estimated Interhouse Swipes Per Meal for Each House",
+       subtitle = "Month and year are included as fixed effects in this model",
+       color = "House") 
+
+```
+
+While the above plot shows the average interhouse swipe counts for each house while controlling for month, the below plot displays the estimated interhouse swipe counts per meal associated with each month while controlling for house.
+
+As we can see, all months have some overlap between the error bars, so there is not a statistically significant difference between the interhouse swipe counts and any two months. However, we can see that January of 2019, on average, experience the greatest number of interhouse swipe counts while December of 2017 saw the least.
+
+```{r reg_month_graph}
+
+# basically taking the info from the gt table but plotting it with month instead
+# of house
+
+mult %>% 
+  tidy(conf.int = TRUE) %>% 
+  slice(-(2:12)) %>% 
+  mutate(estimate = ifelse(term != "(Intercept)", 
+                           estimate + 97.07523148, estimate),
+         conf.low = ifelse(term != "(Intercept)",
+                           conf.low + 97.07523148, conf.low),
+         conf.high = ifelse(term != "(Intercept)",
+                            conf.high + 97.07523148, conf.high),
+         term = ifelse(term == "(Intercept)", "1/2018",
+                       str_remove(term, "month_year")),
+         term = term %>% 
+                 as_factor() %>% 
+                 fct_reorder(estimate)) %>% 
+  ggplot(aes(term, estimate, color = term)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) +
+  coord_flip() +
+  xlab("Month and Year") +
+  ylab("Estimated Interhouse Swipes Per Meal") +
+  labs(title = "Estimated Interhouse Swipes Per Meal for Each Month",
+       subtitle = "Houses are included as fixed effects in this model",
+       color = "Month") 
+  
 
 
 ```
