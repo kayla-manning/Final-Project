@@ -100,10 +100,10 @@ pct %>%
   # now adding/fixing labels to make the plot more appealing
   
   labs(title = "Bootstrapped Percentages of Interhouse versus Actual Percentages",
-       fill = "Houses",
        subtitle = "Vertical Line Represents Each House's True Percentage of Interhouse Swipes") +
   ylab("Count") +
-  xlab("Simulated Median Percentage of Interhouse Swipes")
+  xlab("Simulated Median Percentage of Interhouse Swipes") +
+  theme(legend.position = "none")
   
   
 

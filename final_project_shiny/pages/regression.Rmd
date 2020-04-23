@@ -44,12 +44,13 @@ anim_data %>%
   ggplot(aes(distance, avg_int, color = year)) +
   geom_point() +
   geom_jitter() +
-  facet_wrap(~ year) +
   labs(title = "Average Interhouse Swipes Per Meal by Distance",
        subtitle = "Distance is measured in feet from the John Harvard Statue",
-       caption = "Note that all FlyBy swipes are interhouse") +
+       caption = "Note that all FlyBy swipes are interhouse",
+       color = "Academic Year") +
   xlab("Distance (ft) from the John Harvard Statue") +
-  ylab("Average Interhouse Swipes Per Dining Location")
+  ylab("Average Interhouse Swipes Per Dining Location") +
+  scale_color_discrete(labels = c("2017-2018", "2018-2019"))
 
 ```
 
@@ -75,13 +76,14 @@ anim_data %>%
   ggplot(aes(distance, avg_int, color = year)) +
   geom_point() +
   geom_jitter() +
-  facet_wrap(~ year) +
   labs(title = "Average Interhouse Swipes Per Meal by Distance",
        subtitle = "Distance is measured in feet from the John Harvard Statue",
-       caption = "Only looking at upperclassman houses") +
+       caption = "Only looking at upperclassman houses",
+       color = "Academic Year") +
   xlab("Distance (ft) from the John Harvard Statue") +
   ylab("Average Interhouse Swipes Per Dining Location") +
-  geom_smooth(method = "lm", se = FALSE, formula = y ~ x)
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ x) +
+  scale_color_discrete(labels = c("2017-2018", "2018-2019"))
 
 ```
 
@@ -148,8 +150,8 @@ mult %>%
   xlab("House") +
   ylab("Estimated Interhouse Swipes Per Meal") +
   labs(title = "Estimated Interhouse Swipes Per Meal for Each House",
-       subtitle = "Month and year are included as fixed effects in this model",
-       color = "House") 
+       subtitle = "Month and year are included as fixed effects in this model") +
+  theme(legend.position = "none")
 
 ```
 
@@ -183,8 +185,8 @@ mult %>%
   xlab("Month and Year") +
   ylab("Estimated Interhouse Swipes Per Meal") +
   labs(title = "Estimated Interhouse Swipes Per Meal for Each Month",
-       subtitle = "Houses are included as fixed effects in this model",
-       color = "Month") 
+       subtitle = "Houses are included as fixed effects in this model") +
+  theme(legend.position = "none")
   
 
 

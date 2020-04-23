@@ -140,7 +140,8 @@ tidy_int_reg_bag %>%
   labs(title = "Change in Interhouse at Breakfast",
        subtitle = "Calculated as the difference in the percent of median \ninterhouse swipes in 2017-2018 and 2018-2019") +
   xlab("Difference") +
-  ylab("House")
+  ylab("House") +
+  theme(legend.position = "none")
 
 # saving image for shiny
 
@@ -179,7 +180,8 @@ tidy_int_reg_bag %>%
   labs(title = "Change in Interhouse at Lunch",
        subtitle = "Calculated as the difference in the percent of median \ninterhouse swipes in 2017-2018 and 2018-2019") +
   xlab("Difference") +
-  ylab("House")
+  ylab("House") +
+  theme(legend.position = "none")
 
 # saving for access in shiny app
 
@@ -215,7 +217,8 @@ tidy_int_reg_bag %>%
   labs(title = "Change in Interhouse at Dinner",
        subtitle = "Calculated as the difference in the percent of median \ninterhouse swipes in 2017-2018 and 2018-2019") +
   xlab("Difference") +
-  ylab("House")
+  ylab("House") +
+  theme(legend.position = "none")
   
 # saving for shiny
 
@@ -255,7 +258,8 @@ tidy_int_reg_bag %>%
   labs(title = "Change in Interhouse at Breakfast",
        subtitle = "Calculated as the difference in median \ninterhouse swipes in 2017-2018 and 2018-2019") +
   xlab("Difference") +
-  ylab("House")
+  ylab("House") +
+  theme(legend.position = "none")
 
 # saving image for shiny
 
@@ -284,7 +288,8 @@ tidy_int_reg_bag %>%
   labs(title = "Change in Interhouse at Lunch",
        subtitle = "Calculated as the difference in median \ninterhouse swipes in 2017-2018 and 2018-2019") +
   xlab("Difference") +
-  ylab("House")
+  ylab("House") +
+  theme(legend.position = "none")
 
 # saving image for shiny
 
@@ -313,7 +318,8 @@ tidy_int_reg_bag %>%
   labs(title = "Change in Interhouse at Dinner",
        subtitle = "Calculated as the difference in median \ninterhouse swipes in 2017-2018 and 2018-2019") +
   xlab("Difference") +
-  ylab("House")
+  ylab("House") +
+  theme(legend.position = "none")
 
 # saving image for shiny
 
