@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Median versus Mean
 
-At certain times in the year, HUDS only operates select dining halls. For example, the dining halls open on a rolling basis following Winter Recess. As a result, some dining halls to have uncharacteristically high swipe counts. These outliers make our data susceptible to skewness, which has an impact on the mean and standard deviation, but less of an effect on median and interquartile range. Because of this, I elected to use median as my measure of choice when considering average counts.
+At certain times in the year, HUDS only operates select dining halls. For example, the dining halls open on a rolling basis following Winter Recess. As a result, some dining halls have uncharacteristically high swipe counts. These outliers make our data susceptible to skewness, which has an impact on the mean and standard deviation, but less of an effect on median and interquartile range. Because of this, I elected to use median as my measure of choice when considering average counts.
 
 ### Including Change in Percent and Overall Count of Interhouse Swipes by Meal
 
