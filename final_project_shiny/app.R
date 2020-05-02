@@ -44,7 +44,8 @@ anim_table <- function(x) {
 
 
 ui <- navbarPage(
-  "HUDS Traffic Patterns in 2017-2018 and 2018-2019 Academic Years",
+  "Undergraduate Harvard University Dining Services (HUDS) Traffic Patterns 
+  in 2017-2018 and 2018-2019",
   tabPanel("About", 
            includeHTML(file.path("pages/about.html"))),
   navbarMenu("Regression and Simulation",
